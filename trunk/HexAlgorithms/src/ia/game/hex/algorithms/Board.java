@@ -45,8 +45,9 @@ public class Board {
 	 * @param row
 	 * @param column
 	 * @param player
+	 * @return true se la mossa è lecita
 	 */
-	public void movePiece(int row,int column,int player){
+	public boolean movePiece(int row,int column,int player){
 	
 		try{	
 			if(!board[row][column].busy){
@@ -56,6 +57,9 @@ public class Board {
 		}catch(IndexOutOfBoundsException e){
 			System.out.println("row e column eccedono la dimensione della matrice");
 		}
+		
+		
+		return board[row][column].busy;
 	}
 	
 	/**
