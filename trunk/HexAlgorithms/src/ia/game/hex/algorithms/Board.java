@@ -1,5 +1,7 @@
 package ia.game.hex.algorithms;
 
+import java.util.Observable;
+
 
 
 /***
@@ -21,7 +23,7 @@ class Info{
  * @author Nich
  *
  */
-public class Board {
+public class Board extends Observable {
 	private int rows;
 	private int columns;
 	private Info[][] board;
@@ -53,6 +55,8 @@ public class Board {
 			if(!board[row][column].busy){
 				board[row][column].player = player;
 				board[row][column].busy = true;
+				this.setChanged();
+				this.notifyObservers(new BoardEvent(row,column));
 			}
 		}catch(IndexOutOfBoundsException e){
 			System.out.println("row e column eccedono la dimensione della matrice");
