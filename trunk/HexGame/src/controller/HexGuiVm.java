@@ -3,15 +3,18 @@ package controller;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 import view.command.Action;
 import view.command.Command;
 import view.command.CommandExec;
-import model.Board;
+import model.Arbiter;
 import model.Utility;
+import ia.game.hex.algorithms.*;
 
 
-public class HexGuiVm {
+public class HexGuiVm implements Observer {
 
 	private Board board;
 	private int side;
@@ -21,12 +24,14 @@ public class HexGuiVm {
 	private Cell[][]  cells;	   			//list of binding object
 	private SelectedCell selected_cell;		//binding objects
 	private Command on_selected_command;	//command
+	private Arbiter arbiter;
 	
-	public HexGuiVm(){
-		board = new Board(number_rows,number_columns);
+	public HexGuiVm(Board b){
+		board = b;
 		side = Utility.DEFAULT_SIDE;
 		apotema = side*0.866025;	
 		selected_cell = null;
+		arbiter = new Arbiter();
 		on_selected_command = new CommandExec(new OnSelectedAction());
 		_createCells();
 	}
@@ -136,15 +141,30 @@ public class HexGuiVm {
 					System.out.println(find);	//test
 				}
 			}
+			i--;j--;
 			System.out.println(find);	//test
 			if(find){	
-				board.movePiece(i-1, j-1, 0);		//A chi tocca??!
-				cells[i-1][j-1].setColor(Utility.PLAYER_1_COLOR);//test
+				if(board.movePiece(i, j,arbiter.getCurrentPlayer())){
+					cells[i-1][j-1].setColor(arbiter.getCurrentPlayerColor());
+					arbiter.nextStep();
+					
+				}
 			}
 			return find;
 		}
 		
 	}
+
+	
+	//when the state of board change
+	@Override
+	public void update(Observable o, Object arg) {
+		BoardEvent event = (BoardEvent)arg; 
+		cells[event.getX()][event.getY()].setColor(arbiter.getCurrentPlayerColor());
+		arbiter.nextStep();
+	}
+	
+	
 	
 	
 	
