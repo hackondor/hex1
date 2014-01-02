@@ -1,20 +1,60 @@
 package ia.game.hex.algorithms;
 
-import java.util.Observable;
-import java.util.Observer;
+public abstract class AlgorithmsDefinition{
+	
 
-public abstract class AlgorithmsDefinition implements Observer {
-	
 	private Board board;
+	private int player; 
+	private boolean piecePlaced;
+	private Arbiter arbiter;
 	
-	public AlgorithmsDefinition(Board b){
-		board = b;
+	
+	public AlgorithmsDefinition(){
+		board = null;
+		player = -1;
+		piecePlaced = false;
 	}
 	
-	public void update(Observable obs, Object args) {
-		action();
+	public void setBoard(Board board) {
+		this.board = board;
 	}
 	
-	public abstract void action();
+	public void setArbiter(Arbiter a){
+		arbiter = a;
+	}
+	
+	public void setPlayer(int player){
+		this.player = player;
+	}
+	
+	
+	public void action(){
+		piecePlaced = false;   //permetti una mossa
+		run();
+	}
+	
+	public abstract void run();
+	
+	public void placePiece(int i,int j) throws InvalidPlacementException, MultiplePlacementExeption {
+		boolean placementFine = false;
+		if(piecePlaced)
+			throw new MultiplePlacementExeption();
+		if(!piecePlaced)
+			placementFine = board.movePiece(i, j, player);
+		if(!placementFine)
+			throw new InvalidPlacementException();
+		piecePlaced = true;
+	}
+	
+	public boolean isBusy(int i,int j){
+		return board.isBusy(i, j);
+	}
+	
+
+	
+	
+	
+	 
+	
 
 }

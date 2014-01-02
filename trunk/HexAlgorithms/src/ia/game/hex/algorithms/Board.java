@@ -51,19 +51,21 @@ public class Board extends Observable {
 	 */
 	public boolean movePiece(int row,int column,int player){
 	
+		boolean check = false;
 		try{	
 			if(!board[row][column].busy){
 				board[row][column].player = player;
 				board[row][column].busy = true;
+				check = true;
 				this.setChanged();
 				this.notifyObservers(new BoardEvent(row,column));
 			}
 		}catch(IndexOutOfBoundsException e){
+			e.printStackTrace();
 			System.out.println("row e column eccedono la dimensione della matrice");
 		}
 		
-		
-		return board[row][column].busy;
+		return check;
 	}
 	
 	/**
@@ -82,6 +84,10 @@ public class Board extends Observable {
 	
 	public int GetColumnsNumber(){
 		return columns;
+	}
+	
+	public boolean isBusy(int row,int column){
+		return board[row][column].busy;
 	}
 	
 	
