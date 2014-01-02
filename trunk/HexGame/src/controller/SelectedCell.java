@@ -15,7 +15,7 @@ public class SelectedCell {
 		y = -1;
 	}
 	
-	public void Seleted(int x1,int y1){
+	public void Selected(int x1,int y1){
 		x = x1;
 		y = y1;
 	}

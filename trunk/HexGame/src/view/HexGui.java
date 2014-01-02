@@ -73,9 +73,8 @@ public class HexGui extends JFrame implements Observer  {
 			x = arg0.getX();
 			y = arg0.getY();
 			System.out.println(x+";"+y); //test
-			selected_cell.Seleted(x,y);
+			selected_cell.Selected(x,y);
 			vm.OnSelectedCommand().execute();
-			
 		}
 
 		@Override
