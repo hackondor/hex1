@@ -90,6 +90,11 @@ public class Board extends Observable {
 		return board[row][column].busy;
 	}
 	
+	public int belongTo(int row,int column){
+		return board[row][column].player;
+	}
+	
+	
 	
 	
 
