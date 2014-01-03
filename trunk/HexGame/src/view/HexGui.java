@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -34,6 +35,8 @@ public class HexGui extends JFrame implements Observer  {
 		setSize(800,600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainpanel = new JPanel();
+		this.setBackground(Color.ORANGE);
+		mainpanel.setBackground(Color.ORANGE);
 		mainpanel.addMouseListener(new ClickListener());
 		add(mainpanel);
 		this.vm=vm;
