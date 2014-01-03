@@ -22,8 +22,12 @@ public class Algorithm extends AlgorithmsDefinition {
 	@Override
 	public void run() {
 		try {
-			while(this.isBusy(i++, j++));
-			placePiece(i-1,j-1);
+			//while(this.isBusy(i++, j++));
+			if(j>=5){
+				i++;
+				j=0;
+			}
+			placePiece(i,j++);
 		} catch (InvalidPlacementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,9 +1,10 @@
 
 
-import ia.game.hex.algorithms.Board;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+
+
 
 
 
