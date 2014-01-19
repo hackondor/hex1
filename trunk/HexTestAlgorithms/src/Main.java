@@ -11,8 +11,7 @@ import javax.swing.SwingUtilities;
 
 
 import model.Game;
-import view.HexGui;
-import controller.HexGuiVm;
+
 
 
 public class Main {
