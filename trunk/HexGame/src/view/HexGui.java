@@ -84,6 +84,7 @@ public class HexGui extends JFrame implements Observer  {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("Human VS IA selected");
 				//restart game
+				//use a Vm method. Vm use a setMode method of Game class. Delegate(observer) is an idea
 			}
         });
         
@@ -93,6 +94,7 @@ public class HexGui extends JFrame implements Observer  {
         	public void actionPerformed(ActionEvent arg0) {
         		System.out.println("IA VS IA selected");
         		//restart game
+        		//use a Vm method. Vm use a setMode method of Game class. Delegate is an idea
         	}
         });
         
