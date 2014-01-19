@@ -19,6 +19,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 
@@ -58,8 +59,12 @@ public class HexGui extends JFrame implements Observer  {
         JMenuBar menuBar = new JMenuBar();
         // Add the menubar to the frame
         setJMenuBar(menuBar);
+        
+		JMenu newMenu = new JMenu("New Game");
 		JMenu editMenu = new JMenu("Edit");
+		 menuBar.add(newMenu);
 		 menuBar.add(editMenu);
+		 //newMenu
 		JRadioButtonMenuItem radioAction1 = new JRadioButtonMenuItem(
                 "Human VS IA");
         JRadioButtonMenuItem radioAction2 = new JRadioButtonMenuItem(
@@ -70,26 +75,38 @@ public class HexGui extends JFrame implements Observer  {
         bg.add(radioAction1);
         bg.add(radioAction2);
         bg.setSelected(radioAction1.getModel(), true);
-        editMenu.add(radioAction1);
-        editMenu.add(radioAction2);
+        newMenu.add(radioAction1);
+        newMenu.add(radioAction2);
         
         radioAction1.addActionListener(new ActionListener() {
   
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("Human VS IA selected");
-				
+				//restart game
 			}
         });
         
         radioAction2.addActionListener(new ActionListener() {
-        	  
-        				@Override
-        				public void actionPerformed(ActionEvent arg0) {
-        					System.out.println("IA VS IA selected");
-        					
-        				}
-        	        });
+
+        	@Override
+        	public void actionPerformed(ActionEvent arg0) {
+        		System.out.println("IA VS IA selected");
+        		//restart game
+        	}
+        });
+        
+        //editMenu
+        JMenuItem configurationAction = new JMenuItem("IA configuration");
+        editMenu.add(configurationAction);
+        
+        configurationAction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                System.out.println("IA configuration");
+                //open a pop up which contains algorithms of IA players.
+                //IA players must are added in a game class
+            }
+        });
 		
 	}
 	
