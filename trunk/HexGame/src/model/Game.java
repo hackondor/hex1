@@ -46,24 +46,30 @@ public class Game {
 		arbiter.addPlayer(a);
 	}
 	
-	public interface GameMode{ void initialize();}
-	public class HumanVsIAGame implements GameMode{
+	//Pattern State
+	public abstract class GameMode{ protected abstract void initialize();}
+	//first state
+	public class HumanVsIAGame extends GameMode{
 
 		@Override
-		public void initialize() {
+		protected void initialize() {
 			// TODO Auto-generated method stub
 			
 		}}
-	public class IAVsIAGame implements GameMode{
+	//second state
+	public class IAVsIAGame extends GameMode{
 
 		@Override
-		public void initialize() {
+		protected void initialize() {
 			// TODO Auto-generated method stub
 			
 		}}
+
 	public GameMode HumanVsIAGame = new HumanVsIAGame();
 	public GameMode IAVsIAGame = new IAVsIAGame();
+	public GameMode currentMode = HumanVsIAGame; //Default
 	public void setMode(GameMode g){
+		currentMode = g;
 		g.initialize();
 	}
 
