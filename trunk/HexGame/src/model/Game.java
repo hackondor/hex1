@@ -45,5 +45,26 @@ public class Game {
 		a.setBoard(board);
 		arbiter.addPlayer(a);
 	}
+	
+	public interface GameMode{ void initialize();}
+	public class HumanVsIAGame implements GameMode{
+
+		@Override
+		public void initialize() {
+			// TODO Auto-generated method stub
+			
+		}}
+	public class IAVsIAGame implements GameMode{
+
+		@Override
+		public void initialize() {
+			// TODO Auto-generated method stub
+			
+		}}
+	public GameMode HumanVsIAGame = new HumanVsIAGame();
+	public GameMode IAVsIAGame = new IAVsIAGame();
+	public void setMode(GameMode g){
+		g.initialize();
+	}
 
 }
