@@ -3,11 +3,12 @@ package ia.game.hex.algorithms;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Observable;
 
 
 
 
-public class Arbiter{
+public class Arbiter extends Observable{
 
 	private int turn = 0;		
 	private ArrayList<Player> players;
@@ -35,9 +36,11 @@ public class Arbiter{
 
 
 	public void nextStep(){
-		if(isWin())
+		if(isWin()){
 			System.out.println("Player"+players.get(this.getCurrentPlayer()).getName()+" has win!");  //test
-		else{
+			this.setChanged();
+			this.notifyObservers(players.get(this.getCurrentPlayer()));
+		}else{
 			if(players.size()!=0){
 				turn++;
 				turn = turn%2;
@@ -189,65 +192,11 @@ public class Arbiter{
 		}
 
 	}
-
-
-	/**
-	 * Informazioni del giocatore di HEX
-	 * @author Nich
-	 *
-	 */
-	private class Player{
-		private AlgorithmsDefinition algorithm;
-		private Color player_color;
-		private boolean IA;
-		private String name;
-
-
-		public Player(String name,Color c){
-			player_color = c;
-			IA = false;
-			algorithm = null;
-			this.name = name;
-		}
-
-		public Player(String name,AlgorithmsDefinition a,Color c){
-			player_color = c;
-			algorithm = a;
-			IA = true;
-			this.name = name;
-		}
-
-		public AlgorithmsDefinition getAlgorithm() {
-			return algorithm;
-		}
-
-		public void setAlgorithm(AlgorithmsDefinition algorithm) {
-			IA = true;
-			this.algorithm = algorithm;
-		}
-
-		public Color getPlayerColor() {
-			return player_color;
-		}
-
-		public void setPlayerColor(Color player_color) {
-			this.player_color = player_color;
-		}
-
-		public boolean isIA(){
-			return IA;
-		}
-		
-		public String getName(){
-			return name;
-		}
-		
-		
-
-
-
-
+	
+	public ArrayList<Player> getPlayers(){
+		return players;
 	}
+
 
 
 }
