@@ -13,6 +13,7 @@ public class Arbiter{
 	private ArrayList<Player> players;
 	private Board board;
 	private Color[] color;
+	
 
 
 	public Arbiter(Board board){
@@ -35,7 +36,7 @@ public class Arbiter{
 
 	public void nextStep(){
 		if(isWin())
-			System.out.println("Player has win!");  //test
+			System.out.println("Player"+players.get(this.getCurrentPlayer()).getName()+" has win!");  //test
 		else{
 			if(players.size()!=0){
 				turn++;
@@ -45,6 +46,8 @@ public class Arbiter{
 			}
 		}
 	}
+	
+	
 
 	public Color getCurrentPlayerColor() {
 		return players.get(turn).getPlayerColor();
@@ -61,17 +64,21 @@ public class Arbiter{
 	/**
 	 * Aggiunge un giocatore umano
 	 */
-	public void addPlayer(){
-		Player p = new Player(color[players.size()]);
+	public void addPlayer(String aname){
+		Player p = new Player(aname,color[players.size()]);
 		players.add(p);
+		if(this.isStarted() && players.get(0).isIA()) //se il primo giocatore è un IA
+			_startGame();
 	}
 	/**
 	 * Aggiunge un giocatore artificiale
 	 */
 	public void addPlayer(AlgorithmsDefinition a){
 		a.setPlayer(players.size());
-		Player p = new Player(a,color[players.size()]);
+		Player p = new Player(a.getName(),a,color[players.size()]);
 		players.add(p);
+		if(this.isStarted() && players.get(0).isIA()) //se il primo giocatore è un IA
+			_startGame();
 	}
 
 	public boolean isPlacementLegal(int i,int j){
@@ -129,6 +136,17 @@ public class Arbiter{
 		return win;
 	}
 	
+	/**
+	 * Decreta l'inizio del gioco. Il che significa che se il primo giocatore è 
+	 * umano allora aspetterà la sua prima mossa, altrimenti se il giocatore è un IA
+	 * gli comunica che deve calcolare una mossa.
+	 */
+	private void _startGame(){
+		if(players.get(0).isIA())
+			players.get(0).getAlgorithm().action();
+			
+	}
+	
 	private boolean _winDetect(int i,int j){
 		
 		if(i<0 || j<0 || i >= board.GetRowsNumber() || j>= board.GetColumnsNumber() ) //CASO DEGENERE
@@ -182,18 +200,21 @@ public class Arbiter{
 		private AlgorithmsDefinition algorithm;
 		private Color player_color;
 		private boolean IA;
+		private String name;
 
 
-		public Player(Color c){
+		public Player(String name,Color c){
 			player_color = c;
 			IA = false;
 			algorithm = null;
+			this.name = name;
 		}
 
-		public Player(AlgorithmsDefinition a,Color c){
+		public Player(String name,AlgorithmsDefinition a,Color c){
 			player_color = c;
 			algorithm = a;
 			IA = true;
+			this.name = name;
 		}
 
 		public AlgorithmsDefinition getAlgorithm() {
@@ -216,6 +237,12 @@ public class Arbiter{
 		public boolean isIA(){
 			return IA;
 		}
+		
+		public String getName(){
+			return name;
+		}
+		
+		
 
 
 
