@@ -17,16 +17,12 @@ import model.Game;
 public class Main {
 	
 	public static void main(String args[]){
+
 		
-	//	SwingUtilities.invokeLater(new Runnable() {
-	//	 public void run() {
 			 Game g = new Game();
 			 JFrame gui = g.getGui();
-			 g.addPlayer();
-			 g.addPlayer(new Algorithm());
+			 g.addPlayer(new Algorithm("StupidIA")); g.addPlayer("Nich");
 			 gui.setVisible(true);
-			 
-	//	 }
-	//	});		
+
 	}
 }

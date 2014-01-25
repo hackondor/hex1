@@ -11,8 +11,8 @@ public class Algorithm extends AlgorithmsDefinition {
 	private int i;
 	private int j;
 	
-	public Algorithm() {
-		super();
+	public Algorithm(String name) {
+		super(name);
 		i = 0;
 		j = 0;
 		
