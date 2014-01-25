@@ -2,6 +2,8 @@ package model;
 
 import javax.swing.JFrame;
 
+import library.pattern.command.Action;
+import library.pattern.command.Command;
 import ia.game.hex.algorithms.AlgorithmsDefinition;
 import ia.game.hex.algorithms.Arbiter;
 import ia.game.hex.algorithms.Board;
@@ -37,40 +39,29 @@ public class Game {
 		return gui;
 	}
 	
-	public void addPlayer(){
-		arbiter.addPlayer();
+	/**
+	 * add a human player
+	 */
+	public void addPlayer(String name){
+		arbiter.addPlayer(name);
 	}
 	
+	/**
+	 * add a IA player. 
+	 * @param a: IA player
+	 */
 	public void addPlayer(AlgorithmsDefinition a){
 		a.setBoard(board);
 		arbiter.addPlayer(a);
+		
 	}
 	
-	//Pattern State
-	public abstract class GameMode{ protected abstract void initialize();}
-	//first state
-	public class HumanVsIAGame extends GameMode{
-
-		@Override
-		protected void initialize() {
-			// TODO Auto-generated method stub
-			
-		}}
-	//second state
-	public class IAVsIAGame extends GameMode{
-
-		@Override
-		protected void initialize() {
-			// TODO Auto-generated method stub
-			
-		}}
-
-	public GameMode HumanVsIAGame = new HumanVsIAGame();
-	public GameMode IAVsIAGame = new IAVsIAGame();
-	public GameMode currentMode = HumanVsIAGame; //Default
-	public void setMode(GameMode g){
-		currentMode = g;
-		g.initialize();
+	/**
+	 * 
+	 */
+	public void setOnGameFinish(Command c){
+		
 	}
+
 
 }
