@@ -2,10 +2,8 @@ package ia.game.hex.gui.controller;
 
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-
 import library.pattern.command.Action;
 import library.pattern.command.Command;
 import library.pattern.command.CommandExec;
@@ -22,7 +20,7 @@ public class HexGuiVm implements Observer {
 	private int number_columns = Utility.DEFAULT_NUMBERS_OF_COLUMNS ;
 	private Cell[][]  cells;	   			//list of binding object
 	private SelectedCell selected_cell;		//binding objects
-	private Command on_selected_command;	//command
+	private Command<Object> on_selected_command;	//command
 	private Arbiter arbiter;
 	
 	public HexGuiVm(Board b,Arbiter a){
@@ -31,7 +29,7 @@ public class HexGuiVm implements Observer {
 		apotema = side*0.866025;	
 		selected_cell = null;
 		arbiter = a;
-		on_selected_command = new CommandExec(new OnSelectedAction());
+		on_selected_command = new CommandExec<Object>(new OnSelectedAction<Object>());
 		_createCells();
 	}
 	
@@ -124,14 +122,14 @@ public class HexGuiVm implements Observer {
 	 * Command
 	 * @return
 	 */
-	public Command OnSelectedCommand(){
+	public Command<Object> OnSelectedCommand(){
 		return on_selected_command;
 	}
 	
-	private class OnSelectedAction implements Action{
+	private class OnSelectedAction<Object> implements Action<Object>{
 
 		@Override
-		public boolean run() {
+		public boolean run(Object o) {
 			boolean find = false;
 			if(arbiter.isTurnOfHumanPlayer()){
 				int i = 0, j= 0;

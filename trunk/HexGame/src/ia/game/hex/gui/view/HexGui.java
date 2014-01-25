@@ -3,23 +3,16 @@ package ia.game.hex.gui.view;
 import ia.game.hex.gui.controller.Cell;
 import ia.game.hex.gui.controller.HexGuiVm;
 import ia.game.hex.gui.controller.SelectedCell;
-import ia.game.hex.gui.model.Utility;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -141,7 +134,7 @@ public class HexGui extends JFrame implements Observer  {
 			y = arg0.getY();
 			System.out.println(x+";"+y); //test
 			selected_cell.Selected(x,y);
-			vm.OnSelectedCommand().execute();
+			vm.OnSelectedCommand().execute(null);
 		}
 
 		@Override
