@@ -34,11 +34,14 @@ public class HexGui extends JFrame implements Observer  {
 	private Cell[][] polygons;       		//board
 	private JPanel mainpanel;
 	private SelectedCell selected_cell;
+	private BufferedImage buffer;
 	
 	public HexGui(HexGuiVm vm){
-		setSize(800,600);
+		setSize(700,700);
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainpanel = new JPanel();
+		mainpanel.setSize(this.getSize());
 		this.setBackground(Color.ORANGE);
 		mainpanel.setBackground(Color.ORANGE);
 		mainpanel.addMouseListener(new ClickListener());
@@ -50,7 +53,8 @@ public class HexGui extends JFrame implements Observer  {
 			c.addObserver(this);
 		selected_cell = new SelectedCell();//binding object
 		vm.setSelectedCell(selected_cell);
-		
+		buffer = new BufferedImage(mainpanel.getWidth(),mainpanel.getHeight(),BufferedImage.TYPE_INT_RGB);
+
 	
 		// Creates a menubar for a JFrame
         JMenuBar menuBar = new JMenuBar();
@@ -116,12 +120,28 @@ public class HexGui extends JFrame implements Observer  {
 
 	
 	public void paint(Graphics gg){
+		if (!main)
 		super.paint(gg);
-		Graphics g = mainpanel.getGraphics();
-		g.drawImage(buffer, 0, 0,mainpanel);
-
+//		Graphics g = mainpanel.getGraphics();
+//		gg.drawImage(buffer, 0, 0,this);
+//		mainpanel.repaint();
+		main=false;
+		Graphics gb = buffer.getGraphics();
+		Graphics2D gb2 = (Graphics2D)gb;
 		
-	}
+		//Graphics g = this.getContentPane().getGraphics();
+
+		//Graphics2D g2 =(Graphics2D)g;
+		
+		//gb2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		for(Cell[] prow:polygons)
+			for(Cell c:prow){
+				gb2.setColor(c.getColor());
+			   gb2.fill(c.getShape());
+			}
+		
+		mainpanel.getGraphics().drawImage(buffer, 0, 0, this);
+		}
 	
 	 class ClickListener implements MouseListener {
 		
@@ -163,7 +183,6 @@ public class HexGui extends JFrame implements Observer  {
 	}
 
 	 
-	 BufferedImage buffer = new BufferedImage(1024,768,BufferedImage.TYPE_INT_RGB);
 	@Override
 	public void update(Observable arg0, Object arg1) {
 	
@@ -181,15 +200,13 @@ public class HexGui extends JFrame implements Observer  {
 			   gb2.fill(c.getShape());
 			}
 		
-		
-		SwingUtilities.invokeLater(new Runnable(){
-
-			@Override
-			public void run() {
-				repaint();
-			}});
-		
+		System.out.println(mainpanel);
+		System.out.println(buffer);
+		System.out.println(mainpanel.getGraphics());
+		main=true;
+		repaint();
 	}
+	private boolean main = false;
 
 	
 
