@@ -3,6 +3,7 @@ package ia.game.hex.gui.view;
 import ia.game.hex.gui.controller.Cell;
 import ia.game.hex.gui.controller.HexGuiVm;
 import ia.game.hex.gui.controller.SelectedCell;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -11,8 +12,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.Observable;
 import java.util.Observer;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -20,6 +23,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.SwingUtilities;
 
 
 
@@ -114,13 +118,9 @@ public class HexGui extends JFrame implements Observer  {
 	public void paint(Graphics gg){
 		super.paint(gg);
 		Graphics g = mainpanel.getGraphics();
-		Graphics2D g2 =(Graphics2D)g;
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		for(Cell[] prow:polygons)
-			for(Cell c:prow){
-				g2.setColor(c.getColor());
-			   g2.fill(c.getShape());
-			}
+		g.drawImage(buffer, 0, 0,mainpanel);
+
+		
 	}
 	
 	 class ClickListener implements MouseListener {
@@ -162,9 +162,33 @@ public class HexGui extends JFrame implements Observer  {
 		}
 	}
 
+	 
+	 BufferedImage buffer = new BufferedImage(1024,768,BufferedImage.TYPE_INT_RGB);
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		this.repaint();
+	
+		Graphics gb = buffer.getGraphics();
+		Graphics2D gb2 = (Graphics2D)gb;
+		
+		//Graphics g = this.getContentPane().getGraphics();
+
+		//Graphics2D g2 =(Graphics2D)g;
+		
+		//gb2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		for(Cell[] prow:polygons)
+			for(Cell c:prow){
+				gb2.setColor(c.getColor());
+			   gb2.fill(c.getShape());
+			}
+		
+		
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run() {
+				repaint();
+			}});
+		
 	}
 
 	

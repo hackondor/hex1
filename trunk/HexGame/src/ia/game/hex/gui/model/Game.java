@@ -78,7 +78,8 @@ public class Game implements Observer {
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		//arg1: the player that has win
-		onFinishCommand.execute(arg1);	
+		if(onFinishCommand!=null)
+			onFinishCommand.execute(arg1);	
 	}
 
 
