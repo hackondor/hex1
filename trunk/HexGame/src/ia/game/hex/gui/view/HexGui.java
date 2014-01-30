@@ -1,17 +1,27 @@
 package ia.game.hex.gui.view;
 
+import ia.game.hex.algorithms.Costant;
+import ia.game.hex.algorithms.GameListener;
+import ia.game.hex.algorithms.Player;
 import ia.game.hex.gui.controller.Cell;
 import ia.game.hex.gui.controller.HexGuiVm;
 import ia.game.hex.gui.controller.SelectedCell;
+import ia.game.hex.gui.model.Utility;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Observable;
 import java.util.Observer;
@@ -28,7 +38,7 @@ import javax.swing.SwingUtilities;
 
 
 @SuppressWarnings("serial")
-public class HexGui extends JFrame implements Observer  {
+public class HexGui extends JFrame implements Observer,GameListener  {
 
 	private HexGuiVm vm;					//view model of the gui
 	private Cell[][] polygons;       		//board
@@ -42,8 +52,6 @@ public class HexGui extends JFrame implements Observer  {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainpanel = new JPanel();
 		mainpanel.setSize(this.getSize());
-		this.setBackground(Color.ORANGE);
-		mainpanel.setBackground(Color.ORANGE);
 		mainpanel.addMouseListener(new ClickListener());
 		add(mainpanel);
 		this.vm=vm;
@@ -139,7 +147,7 @@ public class HexGui extends JFrame implements Observer  {
 				gb2.setColor(c.getColor());
 			   gb2.fill(c.getShape());
 			}
-		
+		drawLine(gb2);
 		mainpanel.getGraphics().drawImage(buffer, 0, 0, this);
 		}
 	
@@ -193,21 +201,63 @@ public class HexGui extends JFrame implements Observer  {
 
 		//Graphics2D g2 =(Graphics2D)g;
 		
-		//gb2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		gb2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		for(Cell[] prow:polygons)
 			for(Cell c:prow){
 				gb2.setColor(c.getColor());
 			   gb2.fill(c.getShape());
 			}
 		
-		System.out.println(mainpanel);
-		System.out.println(buffer);
-		System.out.println(mainpanel.getGraphics());
+		drawLine(gb2);
 		main=true;
 		repaint();
 	}
 	private boolean main = false;
 
+	
+	//when Player args win 
+	@Override
+	public void update(Player args) {
+		//disegna una scritta	
+	}
+
+	
+	private void drawLine(Graphics2D g){
+		System.out.print("ciao"); //test
+		double x1 = Utility.XCENTER - 30;
+		double y1 = Utility.YCENTER - 50;
+		
+		double y2 = vm.getNumbersOfRows()*Utility.DEFAULT_SIDE*2+Utility.MARGIN*2;
+		double x2 = x1;
+		
+		double x3 = (vm.getNumbersOfColumn()-1)*Utility.DEFAULT_SIDE*2+Utility.MARGIN*2;
+		double y3 = y2 + 9*Utility.DEFAULT_SIDE;
+		
+		double x4 = x3;
+		double y4 = 9*Utility.DEFAULT_SIDE;;
+		Color[] colors = Costant.PLAYER_COLOR;
+		Point2D p1 = vm.pointRotation(new Point2D.Double(x1,y1));
+		Point2D p2 = vm.pointRotation(new Point2D.Double(x2,y2));
+		Point2D p3 = vm.pointRotation(new Point2D.Double(x3,y3));
+		Point2D p4 = vm.pointRotation(new Point2D.Double(x3,y4));
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setColor(colors[1]);
+		
+		g.setStroke(new BasicStroke(5.0f,                     // Line width
+                BasicStroke.CAP_ROUND,    // End-cap style
+                BasicStroke.JOIN_ROUND)); // Vertex join style
+		g.draw(new Line2D.Double(p1,p2));
+		g.setColor(colors[0]);
+		g.draw(new Line2D.Double(p2,p3));
+		g.setColor(colors[1]);
+		g.draw(new Line2D.Double(p3,p4));
+		g.setColor(colors[0]);
+		g.draw(new Line2D.Double(p4,p1));
+		
+
+		
+	}
+	
 	
 
 }

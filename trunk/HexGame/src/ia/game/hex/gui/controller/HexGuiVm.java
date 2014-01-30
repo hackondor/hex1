@@ -88,6 +88,8 @@ public class HexGuiVm implements Observer {
 		}
 	}
 	
+	
+	
 	private void _hexagonRotation(Cell c){
 		double x,y;
 		Point2D[] points = c.GetVertices(); 
@@ -95,12 +97,19 @@ public class HexGuiVm implements Observer {
 		
 		x = center.getX()*Math.cos(Utility.ANGLE) - center.getY()*Math.sin(Utility.ANGLE);
 		y = center.getX()*Math.sin(Utility.ANGLE) + center.getY()*Math.cos(Utility.ANGLE);
+		center.setLocation(x, y);
 		for(int i = 0;i <6;i++){
 		x = points[i].getX()*Math.cos(Utility.ANGLE) - points[i].getY()*Math.sin(Utility.ANGLE);
 		y = points[i].getX()*Math.sin(Utility.ANGLE) + points[i].getY()*Math.cos(Utility.ANGLE);
 		points[i].setLocation(x, y);
 		}
 	}
+	
+	public Point2D pointRotation(Point2D p){
+		double x = p.getX()*Math.cos(Utility.ANGLE) - p.getY()*Math.sin(Utility.ANGLE);
+		double y = p.getX()*Math.sin(Utility.ANGLE) + p.getY()*Math.cos(Utility.ANGLE);
+		return new Point2D.Double(x,y);
+	} 
 
 	/**
 	 * Binding method to SelectedCell
