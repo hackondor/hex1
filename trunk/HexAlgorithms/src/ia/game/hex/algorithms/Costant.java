@@ -6,6 +6,6 @@ public class Costant {
 	public final static int RED = 1;
 	public final static int BLACK = 2;
 	public final static int NOPLAYER = 3;
-	public final static Color[] PLAYER_COLOR = {Color.blue,Color.gray,Color.orange,Color.yellow};
+	public final static Color[] PLAYER_COLOR = {Color.blue,Color.red,Color.orange,Color.yellow};
 
 }

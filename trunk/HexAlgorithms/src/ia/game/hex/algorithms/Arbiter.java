@@ -3,17 +3,18 @@ package ia.game.hex.algorithms;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Observable;
 
 
 
 
-public class Arbiter extends Observable{
+
+public class Arbiter{
 
 	private int turn = 0;		
 	private ArrayList<Player> players;
 	private Board board;
 	private Color[] color;
+	private ArrayList<GameListener> finishGameListener;
 	
 
 
@@ -21,6 +22,7 @@ public class Arbiter extends Observable{
 		this.board = board;
 		players = new ArrayList<Player>();
 		color = Costant.PLAYER_COLOR;
+		finishGameListener = new ArrayList<GameListener>();
 	}
 
 	/**
@@ -38,8 +40,7 @@ public class Arbiter extends Observable{
 	public void nextStep(){
 		if(isWin()){
 			System.out.println("Player"+players.get(this.getCurrentPlayer()).getName()+" has win!");  //test
-			this.setChanged();
-			this.notifyObservers(players.get(this.getCurrentPlayer()));
+			notifyListener(players.get(this.getCurrentPlayer()));
 		}else{
 			if(players.size()!=0){
 				turn++;
@@ -195,6 +196,15 @@ public class Arbiter extends Observable{
 	
 	public ArrayList<Player> getPlayers(){
 		return players;
+	}
+	
+	public void addFinishGameListener(GameListener l){
+		finishGameListener.add(l);
+	}
+	
+	private void notifyListener(Player args){
+		for(GameListener g :finishGameListener)
+			g.update(args);
 	}
 
 
