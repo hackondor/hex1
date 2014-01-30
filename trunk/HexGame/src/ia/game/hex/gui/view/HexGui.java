@@ -10,6 +10,8 @@ import ia.game.hex.gui.model.Utility;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -23,6 +25,9 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -34,6 +39,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 
 
@@ -45,8 +52,20 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 	private JPanel mainpanel;
 	private SelectedCell selected_cell;
 	private BufferedImage buffer;
+	private boolean isWin = false;
+	private Player playerWin = null;
 	
 	public HexGui(HexGuiVm vm){
+		try {
+		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+		    }
+		} catch (Exception e) {
+		    // If Nimbus is not available, you can set the GUI to another look and feel.
+		}
 		setSize(700,700);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -147,7 +166,9 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 				gb2.setColor(c.getColor());
 			   gb2.fill(c.getShape());
 			}
-		drawLine(gb2);
+		_drawLines(gb2);
+		if(isWin)
+			_drawPlayerWinString(gb2);
 		mainpanel.getGraphics().drawImage(buffer, 0, 0, this);
 		}
 	
@@ -197,10 +218,7 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 		Graphics gb = buffer.getGraphics();
 		Graphics2D gb2 = (Graphics2D)gb;
 		
-		//Graphics g = this.getContentPane().getGraphics();
 
-		//Graphics2D g2 =(Graphics2D)g;
-		
 		gb2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		for(Cell[] prow:polygons)
 			for(Cell c:prow){
@@ -208,7 +226,7 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 			   gb2.fill(c.getShape());
 			}
 		
-		drawLine(gb2);
+		_drawLines(gb2);
 		main=true;
 		repaint();
 	}
@@ -218,12 +236,46 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 	//when Player args win 
 	@Override
 	public void update(Player args) {
-		//disegna una scritta	
+		isWin = true;
+		playerWin = args;
+	}
+	
+	private void _drawPlayerWinString(Graphics2D g){
+		
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		        RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setColor(Color.GREEN);
+		g.fillRect(0, 50, 700, 200);
+		
+		URL fontUrl;
+		Font font = null;
+		try {
+			fontUrl = new URL("http://www.webpagepublicity.com/" +
+			        "free-fonts/a/Airacobra%20Condensed.ttf");
+			font = Font.createFont(Font.TRUETYPE_FONT, fontUrl.openStream());
+	        font = font.deriveFont(Font.PLAIN,100);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FontFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	        
+		
+
+		g.setStroke(new BasicStroke(2.0f)); // 2-pixel lines
+	    g.setFont(font);
+	    g.setColor(playerWin.getPlayerColor());
+		g.drawString(playerWin.getName()+" win! ", 50, 200);
+		System.out.println("weee");//test
 	}
 
 	
-	private void drawLine(Graphics2D g){
-		System.out.print("ciao"); //test
+	private void _drawLines(Graphics2D g){
 		double x1 = Utility.XCENTER - 30;
 		double y1 = Utility.YCENTER - 50;
 		
@@ -234,12 +286,13 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 		double y3 = y2 + 9*Utility.DEFAULT_SIDE;
 		
 		double x4 = x3;
-		double y4 = 9*Utility.DEFAULT_SIDE;;
+		double y4 = 9*Utility.DEFAULT_SIDE;
+		
 		Color[] colors = Costant.PLAYER_COLOR;
 		Point2D p1 = vm.pointRotation(new Point2D.Double(x1,y1));
 		Point2D p2 = vm.pointRotation(new Point2D.Double(x2,y2));
 		Point2D p3 = vm.pointRotation(new Point2D.Double(x3,y3));
-		Point2D p4 = vm.pointRotation(new Point2D.Double(x3,y4));
+		Point2D p4 = vm.pointRotation(new Point2D.Double(x4,y4));
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor(colors[1]);
 		
@@ -255,6 +308,8 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 		g.draw(new Line2D.Double(p4,p1));
 		
 
+		
+		
 		
 	}
 	
