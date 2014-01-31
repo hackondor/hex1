@@ -1,9 +1,12 @@
 package ia.game.hex.gui.controller;
 
+import java.awt.Color;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+
 import library.pattern.command.Action;
 import library.pattern.command.Command;
 import library.pattern.command.CommandExec;
@@ -169,6 +172,49 @@ public class HexGuiVm implements Observer {
 		System.out.println("UPDATE VM");  //test
 		cells[event.getX()][event.getY()].setColor(arbiter.getCurrentPlayerColor());
 		arbiter.nextStep();
+	}
+	
+	ArrayList<PlayerInfo> players = null;
+	public ArrayList<PlayerInfo> getPlayersInfo(){
+		ArrayList<PlayerInfo> players = new ArrayList<PlayerInfo>();
+		for(Player p:arbiter.getPlayers()){
+			players.add(new PlayerInfo(p.getPlayerColor(),p.getName()));
+		}
+		return players;
+	}
+	
+	/**
+	 * This class contains basic info of a player
+	 * @author Nich
+	 *
+	 */
+	public class PlayerInfo{
+		private Color color;
+		private String name;
+		
+		public PlayerInfo(Color color,String name){
+			this.color = color;
+			this.name = name;
+		}
+
+		public Color getColor() {
+			return color;
+		}
+
+		public void setColor(Color color) {
+			this.color = color;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		
+		
 	}
 	
 	

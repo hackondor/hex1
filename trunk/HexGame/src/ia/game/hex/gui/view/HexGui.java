@@ -5,6 +5,7 @@ import ia.game.hex.algorithms.GameListener;
 import ia.game.hex.algorithms.Player;
 import ia.game.hex.gui.controller.Cell;
 import ia.game.hex.gui.controller.HexGuiVm;
+import ia.game.hex.gui.controller.HexGuiVm.PlayerInfo;
 import ia.game.hex.gui.controller.SelectedCell;
 import ia.game.hex.gui.model.Utility;
 
@@ -28,6 +29,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -52,8 +54,10 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 	private JPanel mainpanel;
 	private SelectedCell selected_cell;
 	private BufferedImage buffer;
-	private boolean isWin = false;
-	private Player playerWin = null;
+	private boolean isWin = false;			//true if a player win
+	private Player playerWin = null;		//the player that has win
+	private Font font = null;
+	private ArrayList<PlayerInfo> players;	//binding objects
 	
 	public HexGui(HexGuiVm vm){
 		try {
@@ -66,7 +70,9 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 		} catch (Exception e) {
 		    // If Nimbus is not available, you can set the GUI to another look and feel.
 		}
-		setSize(700,700);
+		players = vm.getPlayersInfo();
+		Utility.createFont();
+		setSize(Utility.DEFAULT_GUI_WIDTH,Utility.DEFAULT_GUI_HEIGHT);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainpanel = new JPanel();
@@ -169,6 +175,7 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 		_drawLines(gb2);
 		if(isWin)
 			_drawPlayerWinString(gb2);
+		_drawPlayersName(gb2);
 		mainpanel.getGraphics().drawImage(buffer, 0, 0, this);
 		}
 	
@@ -227,6 +234,7 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 			}
 		
 		_drawLines(gb2);
+		_drawPlayersName(gb2);
 		main=true;
 		repaint();
 	}
@@ -247,34 +255,16 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 		g.setColor(Color.GREEN);
 		g.fillRect(0, 50, 700, 200);
 		
-		URL fontUrl;
-		Font font = null;
-		try {
-			fontUrl = new URL("http://www.webpagepublicity.com/" +
-			        "free-fonts/a/Airacobra%20Condensed.ttf");
-			font = Font.createFont(Font.TRUETYPE_FONT, fontUrl.openStream());
-	        font = font.deriveFont(Font.PLAIN,100);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FontFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	        
-		
 
+		Font font = Utility.getFont(100);    
 		g.setStroke(new BasicStroke(2.0f)); // 2-pixel lines
 	    g.setFont(font);
 	    g.setColor(playerWin.getPlayerColor());
 		g.drawString(playerWin.getName()+" win! ", 50, 200);
-		System.out.println("weee");//test
+		
 	}
 
-	
+	//draw the lines that sorround the board
 	private void _drawLines(Graphics2D g){
 		double x1 = Utility.XCENTER - 30;
 		double y1 = Utility.YCENTER - 50;
@@ -297,8 +287,8 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 		g.setColor(colors[1]);
 		
 		g.setStroke(new BasicStroke(5.0f,                     // Line width
-                BasicStroke.CAP_ROUND,    // End-cap style
-                BasicStroke.JOIN_ROUND)); // Vertex join style
+                BasicStroke.CAP_ROUND,    					  // End-cap style
+                BasicStroke.JOIN_ROUND)); 					  // Vertex join style
 		g.draw(new Line2D.Double(p1,p2));
 		g.setColor(colors[0]);
 		g.draw(new Line2D.Double(p2,p3));
@@ -307,10 +297,35 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 		g.setColor(colors[0]);
 		g.draw(new Line2D.Double(p4,p1));
 		
-
-		
-		
-		
+	}
+	
+	private void _drawPlayersName(Graphics2D g){
+		ArrayList<PlayerInfo> players = vm.getPlayersInfo();
+		if(!players.isEmpty()){
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+			        RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setColor(Color.WHITE);
+			g.fillRect(0, Utility.DEFAULT_GUI_HEIGHT-105, Utility.DEFAULT_GUI_WIDTH, 110);
+			g.setColor(Color.GREEN);
+			g.fillRect(0, Utility.DEFAULT_GUI_HEIGHT-100, Utility.DEFAULT_GUI_WIDTH, 45);
+	
+			Font font = Utility.getFont(30);    
+			g.setStroke(new BasicStroke(1.0f)); // 2-pixel lines
+		    g.setFont(font);
+		    g.setColor(players.get(0).getColor());
+			g.drawString(players.get(0).getName(), 10 ,Utility.DEFAULT_GUI_HEIGHT-60);
+			g.setColor(Color.WHITE);
+			font = Utility.getFont(50);   
+			g.setStroke(new BasicStroke(1.0f)); // 2-pixel lines
+		    g.setFont(font);
+			g.drawString("VS", Utility.DEFAULT_GUI_WIDTH/2-15 ,Utility.DEFAULT_GUI_HEIGHT-60);
+			font = Utility.getFont(30);   
+			g.setStroke(new BasicStroke(1.0f)); // 2-pixel lines
+		    g.setFont(font);
+			g.setColor(players.get(1).getColor());
+			g.drawString(players.get(1).getName(), Utility.DEFAULT_GUI_WIDTH-70 ,Utility.DEFAULT_GUI_HEIGHT-60);
+			System.out.println("test");//test
+		}
 	}
 	
 	
