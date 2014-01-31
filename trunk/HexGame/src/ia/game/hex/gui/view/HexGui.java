@@ -323,7 +323,7 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 			g.setStroke(new BasicStroke(1.0f)); // 2-pixel lines
 		    g.setFont(font);
 			g.setColor(players.get(1).getColor());
-			g.drawString(players.get(1).getName(), Utility.DEFAULT_GUI_WIDTH-70 ,Utility.DEFAULT_GUI_HEIGHT-60);
+			g.drawString(players.get(1).getName(), Utility.DEFAULT_GUI_WIDTH-90 ,Utility.DEFAULT_GUI_HEIGHT-60);
 			System.out.println("test");//test
 		}
 	}
