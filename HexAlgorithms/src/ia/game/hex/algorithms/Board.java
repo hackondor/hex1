@@ -27,6 +27,7 @@ public class Board extends Observable {
 	private int rows;
 	private int columns;
 	private Info[][] board;
+	private int number_of_piece = 0;						// numero di pedine sulla scacchiera
 	
 	/**
 	 * Crea una bord delle dimnesione @rows x @columns
@@ -57,8 +58,10 @@ public class Board extends Observable {
 				board[row][column].player = player;
 				board[row][column].busy = true;
 				check = true;
+				number_of_piece++;
 				this.setChanged();
 				this.notifyObservers(new BoardEvent(row,column));
+				
 			}
 		}catch(IndexOutOfBoundsException e){
 			e.printStackTrace();
@@ -94,7 +97,21 @@ public class Board extends Observable {
 		return board[row][column].player;
 	}
 	
+	public int getNumberOfPiece(){
+		return number_of_piece;
+	}
 	
+	/**
+	 * Cambia il player che possiede la pedina i,j 
+	 * @param i
+	 * @param j
+	 * @param player il nuovo possessore della pedina
+	 */
+	public void setPiecePlayer(int i,int j,int player){
+		board[i][j].player = player;
+		this.setChanged();
+		this.notifyObservers(new BoardEvent(i,j));
+	}
 	
 	
 
