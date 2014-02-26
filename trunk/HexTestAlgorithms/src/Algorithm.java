@@ -1,7 +1,8 @@
 import ia.game.hex.algorithms.AlgorithmsDefinition;
 import ia.game.hex.algorithms.Board;
 import ia.game.hex.algorithms.InvalidPlacementException;
-import ia.game.hex.algorithms.MultiplePlacementExeption;
+import ia.game.hex.algorithms.InvalidStealException;
+import ia.game.hex.algorithms.MultipleActionExeption;
 
 
 
@@ -22,6 +23,9 @@ public class Algorithm extends AlgorithmsDefinition {
 	@Override
 	public void run() {
 		try {
+	
+			stealPiece(0,0);
+			
 			//while(this.isBusy(i++, j++));
 			if(j>=5){
 				i++;
@@ -31,7 +35,11 @@ public class Algorithm extends AlgorithmsDefinition {
 		} catch (InvalidPlacementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (MultiplePlacementExeption e) {
+		} catch (MultipleActionExeption e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		
+		} catch (InvalidStealException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
