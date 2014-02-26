@@ -17,7 +17,8 @@ public class Main {
 		
 			 Game g = new Game();
 			 JFrame gui = g.getGui();
-			 g.addPlayer(new Algorithm("StupidIA")); g.addPlayer("Nich");
+			 g.addPlayer("Nich");
+			 g.addPlayer(new Algorithm("StupidIA")); 
 			 gui.setVisible(true);
 
 	}
