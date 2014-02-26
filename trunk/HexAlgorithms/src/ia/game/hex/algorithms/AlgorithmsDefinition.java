@@ -5,7 +5,7 @@ public abstract class AlgorithmsDefinition{
 
 	private Board board;
 	private int player; 
-	private boolean piecePlaced;
+	private boolean actionPlayed;
 	private String name; 							//a name for the alghorithm
 	//statistics info
 	private int numberOfMove = 0;
@@ -15,7 +15,7 @@ public abstract class AlgorithmsDefinition{
 	public AlgorithmsDefinition(String name){
 		board = null;
 		player = -1;
-		piecePlaced = false;
+		actionPlayed = false;
 		this.name =  name;
 	}
 	
@@ -37,7 +37,7 @@ public abstract class AlgorithmsDefinition{
 	private long endTime;
 	private long elapsedTime;
 	public void action(){
-			piecePlaced = false;   //permetti una mossa
+			actionPlayed = false;   //permetti una mossa
 		numberOfMove++;
 		startTime = System.currentTimeMillis();
 			run();
@@ -49,15 +49,32 @@ public abstract class AlgorithmsDefinition{
 	
 	public abstract void run();
 	
-	public void placePiece(int i,int j) throws InvalidPlacementException, MultiplePlacementExeption {
+	public void placePiece(int i,int j) throws InvalidPlacementException, MultipleActionExeption {
 		boolean placementFine = false;
-		if(piecePlaced)
-			throw new MultiplePlacementExeption();
-		if(!piecePlaced)
+		if(actionPlayed)
+			throw new MultipleActionExeption();
+		if(!actionPlayed)
 			placementFine = board.movePiece(i, j, player);
 		if(!placementFine)
 			throw new InvalidPlacementException();
-		piecePlaced = true;
+		actionPlayed = true;
+	}
+	
+	public void stealPiece(int i,int j) throws InvalidStealException, MultipleActionExeption{
+		if(actionPlayed)
+			throw new MultipleActionExeption();
+		if(!board.isBusy(i, j)){
+			System.out.println("is busy");
+			throw new InvalidStealException();
+		}
+		if(board.getNumberOfPiece()!=1){
+			System.out.println("piece: "+board.getNumberOfPiece());
+			throw new InvalidStealException();
+		
+		}
+		board.setPiecePlayer(i, j,player);
+		actionPlayed = true;
+		
 	}
 	
 	public boolean isBusy(int i,int j){
