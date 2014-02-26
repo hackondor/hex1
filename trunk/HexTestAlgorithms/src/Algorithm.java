@@ -15,7 +15,7 @@ public class Algorithm extends AlgorithmsDefinition {
 		super(name);
 		i = 0;
 		j = 0;
-		
+		 
 	}
 
 
