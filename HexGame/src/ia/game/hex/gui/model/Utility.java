@@ -17,9 +17,10 @@ public class Utility {
 	public final static int MARGIN = 2;
 	public final static float ANGLE = (float) -Math.PI/10;			//angolo di rotazione degli esagoni
 	private static Font font = null;
-	public static int DEFAULT_GUI_WIDTH = 750;
+	public static int DEFAULT_GUI_WIDTH = 770;
 	public static int DEFAULT_GUI_HEIGHT = 700;
-	
+	public static int PLAYER_HOR=0;
+	public static int PLAYER_VERT=1;
 	
 	public static void createFont(){
 		try {

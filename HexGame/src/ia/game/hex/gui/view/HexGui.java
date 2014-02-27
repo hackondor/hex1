@@ -13,6 +13,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -70,7 +71,7 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 	}
 
 	private void init(){
-		
+
 		// set LookAndFeel
 		try {
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -83,13 +84,13 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 			e.printStackTrace();
 		}
 		//
-		
+
 		players = vm.getPlayersInfo();
 		Utility.createFont();
 		setSize(Utility.DEFAULT_GUI_WIDTH,Utility.DEFAULT_GUI_HEIGHT);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainpanel = new JPanel();
+		mainpanel = new HexPanel();
 		mainpanel.setSize(this.getSize());
 		mainpanel.addMouseListener(new ClickListener());
 		mainpanel.setBackground(Color.RED);
@@ -167,27 +168,27 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 	}
 
 
-
-	public void paint(Graphics gg){
-	
-
-		Graphics gb = buffer.getGraphics();
-		Graphics2D gb2 = (Graphics2D)gb;
-
-		for(Cell[] prow:polygons)
-			for(Cell c:prow){
-				gb2.setColor(c.getColor());
-				gb2.fill(c.getShape());
-			}
-		_drawLines(gb2);
-		if(isWin)
-			_drawPlayerWinString(gb2);
-		_drawPlayersName(gb2);
-		
-		super.paint(gg);
-		mainpanel.getGraphics().drawImage(buffer, 0, 0, this);
-		
-	}
+/* Paint non serve più. Faccio il repaint solo del pannello */
+//	public void paint(Graphics gg){
+//
+//
+//		Graphics gb = buffer.getGraphics();
+//		Graphics2D gb2 = (Graphics2D)gb;
+//
+//		for(Cell[] prow:polygons)
+//			for(Cell c:prow){
+//				gb2.setColor(c.getColor());
+//				gb2.fill(c.getShape());
+//			}
+//		_drawLines(gb2);
+//		if(isWin)
+//			_drawPlayerWinString(gb2);
+//		_drawPlayersName(gb2);
+//
+//		super.paint(gg);
+//		mainpanel.getGraphics().drawImage(buffer, 0, 0, this);
+//
+//	}
 
 	class ClickListener implements MouseListener {
 
@@ -196,11 +197,7 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
-			x = arg0.getX();
-			y = arg0.getY();
-			System.out.println(x+";"+y); //test
-			selected_cell.Selected(x,y);
-			vm.OnSelectedCommand().execute(null);
+
 		}
 
 		@Override
@@ -217,13 +214,18 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 
 		@Override
 		public void mousePressed(MouseEvent arg0) {
+			x = arg0.getX();
+			y = arg0.getY();
+			System.out.println(x+";"+y); //test
+			selected_cell.Selected(x,y);
+			vm.OnSelectedCommand().execute(null);
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
-			// TODO Auto-generated method stub
+			
 
 		}
 	}
@@ -231,29 +233,13 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
-
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
-				Graphics gb = buffer.getGraphics();
-				Graphics2D gb2 = (Graphics2D)gb;
-
-
-				gb2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				for(Cell[] prow:polygons)
-					for(Cell c:prow){
-						gb2.setColor(c.getColor());
-						gb2.fill(c.getShape());
-					}
-
-				_drawLines(gb2);
-				_drawPlayersName(gb2);
-				main=true;
 				repaint();
 			}
 		});
-		
+
 	}
-	private boolean main = false;
 
 
 	//when Player args win 
@@ -336,10 +322,32 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 			g.setStroke(new BasicStroke(1.0f)); // 2-pixel lines
 			g.setFont(font);
 			g.setColor(players.get(1).getColor());
-			g.drawString(players.get(1).getName(), Utility.DEFAULT_GUI_WIDTH-90 ,Utility.DEFAULT_GUI_HEIGHT-60);
+			//Allineamento a destra
+			FontMetrics fm = getFontMetrics( font);
+			int width = fm.stringWidth(players.get(1).getName());
+			g.drawString(players.get(1).getName(), Utility.DEFAULT_GUI_WIDTH-width-15 ,Utility.DEFAULT_GUI_HEIGHT-60);
+			
 		}
 	}
 
+	private class HexPanel extends JPanel {
+		@Override
+		public void paint(Graphics g){
+			Graphics gb = buffer.getGraphics();
+			Graphics2D gb2 = (Graphics2D)gb;
 
+			for(Cell[] prow:polygons)
+				for(Cell c:prow){
+					gb2.setColor(c.getColor());
+					gb2.fill(c.getShape());
+				}
+			_drawLines(gb2);
+			if(isWin)
+				_drawPlayerWinString(gb2);
+			_drawPlayersName(gb2);
 
+			//super.paint(g);
+			g.drawImage(buffer, 0, 0, this);
+		}
+	}
 }
