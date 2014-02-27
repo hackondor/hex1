@@ -58,8 +58,9 @@ public class Board extends Observable {
 				board[row][column].player = player;
 				board[row][column].busy = true;
 				check = true;
+				lastNodePlaced=new Node(row, column);
 				number_of_piece++;
-				System.out.println("Player " + player + "has moved");
+				//ystem.out.println("Player " + player + "has moved");
 				this.setChanged();
 				this.notifyObservers(new BoardEvent(row,column));
 				
@@ -114,7 +115,12 @@ public class Board extends Observable {
 		this.setChanged();
 		this.notifyObservers(new BoardEvent(i,j));
 	}
-	
+	private Node lastNodePlaced;
+
+
+	public Node getLastNodePlaced() {
+		return lastNodePlaced;
+	}
 	
 
 }
