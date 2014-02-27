@@ -25,7 +25,7 @@ public class HexGuiVm implements Observer {
 	private SelectedCell selected_cell;		//binding objects
 	private Command<Object> on_selected_command;	//command
 	private Arbiter arbiter;
-	
+
 	public HexGuiVm(Board b,Arbiter a){
 		board = b;
 		side = Utility.DEFAULT_SIDE;
@@ -35,11 +35,11 @@ public class HexGuiVm implements Observer {
 		on_selected_command = new CommandExec<Object>(new OnSelectedAction<Object>());
 		_createCells();
 	}
-	
+
 	public int getNumbersOfRows(){
 		return number_rows;
 	}
-	
+
 	public int getNumbersOfColumn(){
 		return number_columns;
 	}
@@ -47,12 +47,12 @@ public class HexGuiVm implements Observer {
 	public void changeBoard(Board board){
 		this.board = board;
 	}
-	
+
 	/**
 	 * Crea le celle del gioco
 	 */
 	private void _createCells(){
-		
+
 		//costruzione degli esagoni: Cell
 		Cell c;
 		cells = new Cell[number_rows][number_columns];
@@ -74,40 +74,40 @@ public class HexGuiVm implements Observer {
 				points[5] = new Point2D.Double(xc-side,yc); 
 				c.SetVertices(points);
 				_hexagonRotation(c);
-				
+
 				//creazione della shape
 				shape.moveTo(points[0].getX(), points[0].getY());
 				for (int m = 1; m < 6; m++)
 					shape.lineTo(points[m].getX(), points[m].getY());
 				shape.closePath();
 				c.setShape(shape);
-				
+
 				cells[i][j] = c;
-				
+
 				yc = (float) (yc +2*apotema + Utility.MARGIN);
 			}	
-		xc = (float) (xc + 1.5*side + Utility.MARGIN);
-		yc = (float)(Utility.YCENTER + (i+1)*apotema + Utility.MARGIN);
+			xc = (float) (xc + 1.5*side + Utility.MARGIN);
+			yc = (float)(Utility.YCENTER + (i+1)*apotema + Utility.MARGIN);
 		}
 	}
-	
-	
-	
+
+
+
 	private void _hexagonRotation(Cell c){
 		double x,y;
 		Point2D[] points = c.GetVertices(); 
 		Point2D center = c.GetCenter();
-		
+
 		x = center.getX()*Math.cos(Utility.ANGLE) - center.getY()*Math.sin(Utility.ANGLE);
 		y = center.getX()*Math.sin(Utility.ANGLE) + center.getY()*Math.cos(Utility.ANGLE);
 		center.setLocation(x, y);
 		for(int i = 0;i <6;i++){
-		x = points[i].getX()*Math.cos(Utility.ANGLE) - points[i].getY()*Math.sin(Utility.ANGLE);
-		y = points[i].getX()*Math.sin(Utility.ANGLE) + points[i].getY()*Math.cos(Utility.ANGLE);
-		points[i].setLocation(x, y);
+			x = points[i].getX()*Math.cos(Utility.ANGLE) - points[i].getY()*Math.sin(Utility.ANGLE);
+			y = points[i].getX()*Math.sin(Utility.ANGLE) + points[i].getY()*Math.cos(Utility.ANGLE);
+			points[i].setLocation(x, y);
 		}
 	}
-	
+
 	public Point2D pointRotation(Point2D p){
 		double x = p.getX()*Math.cos(Utility.ANGLE) - p.getY()*Math.sin(Utility.ANGLE);
 		double y = p.getX()*Math.sin(Utility.ANGLE) + p.getY()*Math.cos(Utility.ANGLE);
@@ -120,8 +120,8 @@ public class HexGuiVm implements Observer {
 	public void setSelectedCell(SelectedCell cell){
 		selected_cell = cell;
 	}
-	
-	
+
+
 	/**
 	 * Binding method
 	 * @return polygons. Gli esagoni da disegnare
@@ -129,7 +129,7 @@ public class HexGuiVm implements Observer {
 	public Cell[][] getShapes(){
 		return cells;
 	} 
-	
+
 	/**
 	 * Command
 	 * @return
@@ -137,7 +137,7 @@ public class HexGuiVm implements Observer {
 	public Command<Object> OnSelectedCommand(){
 		return on_selected_command;
 	}
-	
+
 	private class OnSelectedAction<Object> implements Action<Object>{
 
 		@Override
@@ -151,31 +151,34 @@ public class HexGuiVm implements Observer {
 					}
 				}
 				i--;j--;
-				System.out.println(find);	//test
-				if(find){	
-					if(board.movePiece(i, j,arbiter.getCurrentPlayer())){
-						cells[i][j].setColor(arbiter.getCurrentPlayerColor());
-						System.out.println(i+" "+j);
-						arbiter.nextStep();
+				//System.out.println(find);	//test
+				if(find){
+					if(board.isBusy(i, j) && board.getNumberOfPiece()==1)
+						board.setPiecePlayer(i, j, arbiter.getCurrentPlayer());
+					else if(board.movePiece(i, j,arbiter.getCurrentPlayer())){
+						//cells[i][j].setColor(arbiter.getCurrentPlayerColor());
+//						System.out.println(i+" "+j);
+						System.out.println("Player: " + arbiter.getCurrentPlayer());
 					}
+					arbiter.nextStep();
 				}
 			}
-			
+
 			return find;
 		}
-		
+
 	}
 
-	
+
 	//when the state of board change
 	@Override
 	public void update(Observable o, Object arg) {
 		BoardEvent event = (BoardEvent)arg; 
-		System.out.println("UPDATE VM. Color " + arbiter.getCurrentPlayerColor());  //test
+//		System.out.println("UPDATE VM. Color " + arbiter.getCurrentPlayerColor());  //test
 		cells[event.getX()][event.getY()].setColor(arbiter.getCurrentPlayerColor());
-		
+
 	}
-	
+
 	ArrayList<PlayerInfo> players = null;
 	public ArrayList<PlayerInfo> getPlayersInfo(){
 		ArrayList<PlayerInfo> players = new ArrayList<PlayerInfo>();
@@ -184,7 +187,7 @@ public class HexGuiVm implements Observer {
 		}
 		return players;
 	}
-	
+
 	/**
 	 * This class contains basic info of a player
 	 * @author Nich
@@ -193,7 +196,7 @@ public class HexGuiVm implements Observer {
 	public class PlayerInfo{
 		private Color color;
 		private String name;
-		
+
 		public PlayerInfo(Color color,String name){
 			this.color = color;
 			this.name = name;
@@ -214,18 +217,18 @@ public class HexGuiVm implements Observer {
 		public void setName(String name) {
 			this.name = name;
 		}
-		
-		
-		
+
+
+
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
 
 }
