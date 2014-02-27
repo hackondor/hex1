@@ -23,10 +23,16 @@ public class Algorithm extends AlgorithmsDefinition {
 	@Override
 	public void run() {
 		try {
-			if(this.getNumberOfPiece()==1)
-				stealPiece(0,0);
-			else{
-
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//			if(this.getNumberOfPiece()==1)
+//				stealPiece(0,0);
+//			else{
+			{
 				while(this.isBusy(i, j++));
 				if(j>=5){
 					i++;
@@ -41,10 +47,12 @@ public class Algorithm extends AlgorithmsDefinition {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 
-		} catch (InvalidStealException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//		} catch (InvalidStealException e) {
+//			// TODO Auto-generated catch block
+//			System.out.println("Number of piece: "+this.getNumberOfPiece());
+//			e.printStackTrace();
+//
+//		}
+	}}
 
 }
