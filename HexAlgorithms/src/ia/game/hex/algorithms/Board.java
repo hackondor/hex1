@@ -59,6 +59,7 @@ public class Board extends Observable {
 				board[row][column].busy = true;
 				check = true;
 				number_of_piece++;
+				System.out.println("Player " + player + "has moved");
 				this.setChanged();
 				this.notifyObservers(new BoardEvent(row,column));
 				
@@ -109,6 +110,7 @@ public class Board extends Observable {
 	 */
 	public void setPiecePlayer(int i,int j,int player){
 		board[i][j].player = player;
+		System.out.println("Player " + player + " has stealed");
 		this.setChanged();
 		this.notifyObservers(new BoardEvent(i,j));
 	}
