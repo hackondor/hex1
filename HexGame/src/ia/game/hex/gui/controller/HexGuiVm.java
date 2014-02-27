@@ -156,9 +156,11 @@ public class HexGuiVm implements Observer {
 					if(board.movePiece(i, j,arbiter.getCurrentPlayer())){
 						cells[i][j].setColor(arbiter.getCurrentPlayerColor());
 						System.out.println(i+" "+j);
+						arbiter.nextStep();
 					}
 				}
 			}
+			
 			return find;
 		}
 		
@@ -169,9 +171,9 @@ public class HexGuiVm implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		BoardEvent event = (BoardEvent)arg; 
-		System.out.println("UPDATE VM");  //test
+		System.out.println("UPDATE VM. Color " + arbiter.getCurrentPlayerColor());  //test
 		cells[event.getX()][event.getY()].setColor(arbiter.getCurrentPlayerColor());
-		arbiter.nextStep();
+		
 	}
 	
 	ArrayList<PlayerInfo> players = null;
