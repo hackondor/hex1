@@ -45,8 +45,10 @@ public class Arbiter{
 			if(players.size()!=0){
 				turn++;
 				turn = turn%2;
-				if(players.get(turn).isIA())
+				if(players.get(turn).isIA()){
 					players.get(turn).getAlgorithm().action();
+					nextStep();
+				}
 			}
 		}
 	}
