@@ -253,7 +253,7 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setColor(Color.GREEN);
+		g.setColor(new Color(0,255,0,200));
 		g.fillRect(0, 50, 700, 200);
 		Font font = Utility.getFont(100);    
 		g.setStroke(new BasicStroke(2.0f)); // 2-pixel lines
@@ -335,7 +335,8 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 		public void paint(Graphics g){
 			Graphics gb = buffer.getGraphics();
 			Graphics2D gb2 = (Graphics2D)gb;
-
+			gb2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+					RenderingHints.VALUE_ANTIALIAS_ON);
 			for(Cell[] prow:polygons)
 				for(Cell c:prow){
 					gb2.setColor(c.getColor());
