@@ -23,36 +23,29 @@ public class Algorithm extends AlgorithmsDefinition {
 	@Override
 	public void run() {
 		try {
-//			try {
-//				Thread.sleep(1000);
-//			} catch (InterruptedException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-//			if(this.getNumberOfPiece()==1)
-//				stealPiece(0,0);
-//			else{
-			{
+			
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+				
 				while(this.isBusy(i, j++));
 				if(j>=5){
 					i++;
 					j=1;
 				}
 				placePiece(i,j-1);
-			}
+			
 		} catch (InvalidPlacementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MultipleActionExeption e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
 
-//		} catch (InvalidStealException e) {
-//			// TODO Auto-generated catch block
-//			System.out.println("Number of piece: "+this.getNumberOfPiece());
-//			e.printStackTrace();
-//
-//		}
-	}}
+	}
 
 }
