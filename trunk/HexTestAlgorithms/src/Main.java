@@ -19,8 +19,8 @@ public class Main {
 			 JFrame gui = g.getGui();
 			 gui.setVisible(true);
 			 //g.addPlayer(new Algorithm2("GoodIA"));
-			 g.addPlayer(new Algorithm("StupidIA"));
-			 g.addPlayer("Player 2");
+			 
+			 g.addPlayer("Player 2");g.addPlayer(new Algorithm("StupidIA"));
 			
 
 	}
