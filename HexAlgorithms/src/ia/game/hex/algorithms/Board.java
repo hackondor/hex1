@@ -81,6 +81,7 @@ public class Board extends Observable {
 	public void resetPosition(int row,int column){
 		board[row][column].busy = false;
 		board[row][column].player = Costant.NOPLAYER;
+		number_of_piece--;
 	}
 	
 	public int GetRowsNumber(){

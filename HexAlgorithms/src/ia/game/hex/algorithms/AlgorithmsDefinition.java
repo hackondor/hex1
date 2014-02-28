@@ -1,6 +1,8 @@
 package ia.game.hex.algorithms;
 
-public abstract class AlgorithmsDefinition{
+import java.util.Observable;
+
+public abstract class AlgorithmsDefinition extends Observable{
 
 
 	private Board board;
@@ -10,7 +12,7 @@ public abstract class AlgorithmsDefinition{
 	//statistics info
 	private int numberOfMove = 0;
 	private double avgTimePlacement = 0;
-	private double sumTime = 0;						//sum of the time for caclculate each placement	
+	private double sumTime = 0;						//sum of the time for calculate each placement	
 
 	public AlgorithmsDefinition(String name){
 		board = null;
@@ -45,6 +47,8 @@ public abstract class AlgorithmsDefinition{
 		elapsedTime = endTime - startTime;
 		sumTime += elapsedTime; 
 		avgTimePlacement = sumTime/numberOfMove; 
+		setChanged();
+		this.notifyObservers();		//invia un evento che comunica la fine del calcolo della mossa
 	}
 
 	public abstract void run();
