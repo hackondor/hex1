@@ -4,8 +4,10 @@ package ia.game.hex.algorithms;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class Arbiter{
+public class Arbiter implements Observer{
 
 	private static final int PLAYER_HOR = 0;
 	private static final int PLAYER_VERT = 1;
@@ -29,7 +31,7 @@ public class Arbiter{
 	 * 
 	 * @return true se ci sono almeno due giocatori in gioco
 	 */
-	public boolean isStarted(){
+	public boolean isStartable(){
 		if(players.size()>=2)
 			return true;
 		else
@@ -40,13 +42,17 @@ public class Arbiter{
 	public void nextStep(){
 
 		// se è il turno del giocatore orizzontale controllo se la mossa precedente ha portato alla vittoria
-		if(turn==PLAYER_HOR && isWin(groupsHor))
+		if(turn==PLAYER_HOR && isWin(groupsHor)){
 			notifyListener(players.get(this.getCurrentPlayer()));
+			turn = -1;//nex può giocare
+		}
 		
 		// se è il turno del giocatore verticale controllo se la mossa precedente ha portato alla vittoria
-		else if(turn==PLAYER_VERT && isWin(groupsVert))
+		else if(turn==PLAYER_VERT && isWin(groupsVert)){
 			notifyListener(players.get(this.getCurrentPlayer()));
-		
+			turn = -1;//nex può giocare
+		}
+		else
 		// se non c'è stata vittoria
 		if(players.size()!=0){
 			
@@ -56,8 +62,11 @@ public class Arbiter{
 			
 			//se il prossimo giocatore è artificiale invoco il metodo action che compie l'azione opportuna
 			if(players.get(turn).isIA()){
-				players.get(turn).getAlgorithm().action();
-				nextStep();
+				new Thread(new Runnable(){
+					public void run(){
+						players.get(turn).getAlgorithm().action();
+					}
+				}).start();
 			}
 		}
 	}
@@ -74,7 +83,7 @@ public class Arbiter{
 	}
 
 	public boolean isTurnOfHumanPlayer(){
-		return isStarted() && !players.get(turn).isIA();
+		return isStartable() && !players.get(turn).isIA();
 	}
 
 	/**
@@ -83,7 +92,7 @@ public class Arbiter{
 	public void addPlayer(String aname){
 		Player p = new Player(aname,color[players.size()]);
 		players.add(p);
-		if(this.isStarted() && players.get(0).isIA()) //se il primo giocatore è un IA
+		if(isStartable()) //se il primo giocatore è un IA
 			_startGame();
 	}
 	/**
@@ -93,7 +102,8 @@ public class Arbiter{
 		a.setPlayer(players.size());
 		Player p = new Player(a.getName(),a,color[players.size()]);
 		players.add(p);
-		if(this.isStarted() && players.get(0).isIA()) //se il primo giocatore è un IA
+		a.addObserver(this);	//aggiunta di Arbiter alla lista degli ascoltatori che attendono la l'evento che segnala la fine della mossa dell'algoritmo
+		if(isStartable()) //se il primo giocatore è un IA
 			_startGame();
 	}
 
@@ -131,11 +141,13 @@ public class Arbiter{
 		if(players.size()!=0){
 			turn=0;
 			if(players.get(turn).isIA()){
-				players.get(turn).getAlgorithm().action();
-				nextStep();
+				new Thread(new Runnable(){
+					public void run(){
+						players.get(turn).getAlgorithm().action();
+					}
+				});			
 			}
 		}
-
 	}
 
 
@@ -223,6 +235,15 @@ public class Arbiter{
 	private void notifyListener(Player args){
 		for(GameListener g :finishGameListener)
 			g.update(args);
+	}
+
+	/**
+	 * quando l'algortmo termina di calcolare la mossa
+	 */
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		nextStep();
+		
 	}
 
 
