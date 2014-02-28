@@ -113,7 +113,7 @@ public class Arbiter implements Observer{
 
 
 	public boolean isPlacementLegal(int i,int j){
-		return board.isBusy(i, j);
+		return !board.isBusy(i, j);
 	}
 
 	public boolean isStealLegal(){
