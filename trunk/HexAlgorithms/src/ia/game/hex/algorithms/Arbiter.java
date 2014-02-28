@@ -145,7 +145,7 @@ public class Arbiter implements Observer{
 					public void run(){
 						players.get(turn).getAlgorithm().action();
 					}
-				});			
+				}).start();			
 			}
 		}
 	}
