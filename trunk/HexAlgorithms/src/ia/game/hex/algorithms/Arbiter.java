@@ -25,6 +25,8 @@ public class Arbiter implements Observer{
 		winDetection=new WinDetection[2];
 		winDetection[0]=new WinDetection(0, board.GetRowsNumber(),board.GetColumnsNumber());
 		winDetection[1]=new WinDetection(1, board.GetRowsNumber(),board.GetColumnsNumber());
+		board.addObserver(winDetection[0]);
+		board.addObserver(winDetection[1]);
 
 	}
 
