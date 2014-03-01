@@ -73,9 +73,11 @@ public class Game {
 	public class FinishActionListener implements GameListener{
 
 		public void update(Player args) {
+			
 			//args: the player that has win
 			if(onFinishCommand!=null)
 				onFinishCommand.execute(args);	
+			
 		}
 		
 	}

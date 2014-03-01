@@ -247,6 +247,7 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 	public void update(Player args) {
 		isWin = true;
 		playerWin = args;
+		repaint();
 	}
 
 	private void _drawPlayerWinString(Graphics2D g){
