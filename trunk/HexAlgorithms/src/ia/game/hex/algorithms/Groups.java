@@ -45,13 +45,13 @@ public class Groups{
 				e.setValue(g.get(0));
 		}
 	}
-	private boolean containsVector(int[] v, int e)
-	{
-		for (int el :v)
-			if (el==e)
-				return true;
-		return false;
-	}
+//	private boolean containsVector(int[] v, int e)
+//	{
+//		for (int el :v)
+//			if (el==e)
+//				return true;
+//		return false;
+//	}
 	public void createGroup(int key){
 		groups.put(key, nextGroup++);
 	}

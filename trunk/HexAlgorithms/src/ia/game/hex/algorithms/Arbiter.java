@@ -3,7 +3,6 @@ package ia.game.hex.algorithms;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -24,8 +23,8 @@ public class Arbiter implements Observer{
 		color = Costant.PLAYER_COLOR;
 		finishGameListener = new ArrayList<GameListener>();
 		winDetection=new WinDetection[2];
-		winDetection[0]=new WinDetection(0, board);
-		winDetection[1]=new WinDetection(1, board);
+		winDetection[0]=new WinDetection(0, board.GetRowsNumber(),board.GetColumnsNumber());
+		winDetection[1]=new WinDetection(1, board.GetRowsNumber(),board.GetColumnsNumber());
 
 	}
 
@@ -43,7 +42,7 @@ public class Arbiter implements Observer{
 
 	public void nextStep(){
 		// se è il turno del giocatore orizzontale controllo se la mossa precedente ha portato alla vittoria
-		if(winDetection[turn].isWin_forArbiter()){
+		if(winDetection[turn].isWin()){
 			notifyListener(players.get(this.getCurrentPlayer()));
 			turn = -1;//nex può giocare
 		}

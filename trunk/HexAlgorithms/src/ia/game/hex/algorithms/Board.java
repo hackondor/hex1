@@ -62,7 +62,7 @@ public class Board extends Observable {
 				number_of_piece++;
 				//ystem.out.println("Player " + player + "has moved");
 				this.setChanged();
-				this.notifyObservers(new BoardEvent(row,column));
+				this.notifyObservers(new BoardEvent(row,column,BoardEvent.SET,player));
 				
 			}
 		}catch(IndexOutOfBoundsException e){
@@ -79,9 +79,12 @@ public class Board extends Observable {
 	 * @param column
 	 */
 	public void resetPosition(int row,int column){
+		int oldPlayer=board[row][column].player;
 		board[row][column].busy = false;
 		board[row][column].player = Costant.NOPLAYER;
 		number_of_piece--;
+		this.setChanged();
+		this.notifyObservers(new BoardEvent(row,column,BoardEvent.UNSET,oldPlayer));
 	}
 	
 	public int GetRowsNumber(){
@@ -114,7 +117,7 @@ public class Board extends Observable {
 		board[i][j].player = player;
 		System.out.println("Player " + player + " has stealed");
 		this.setChanged();
-		this.notifyObservers(new BoardEvent(i,j));
+		this.notifyObservers(new BoardEvent(i,j,BoardEvent.SET,player));
 	}
 	private Node lastNodePlaced;
 
