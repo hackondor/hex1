@@ -6,13 +6,23 @@ import java.util.Map;
 
 public class Groups{
 	private Map<Integer,Integer> groups;
+	public Groups(Groups g) {
+		super();
+		this.groups = new HashMap<Integer,Integer>(g.groups);
+		this.nextGroup = g.nextGroup;
+	}
 	private int nextGroup;
 
 	public Groups(){
 		groups=new HashMap<Integer, Integer>();
 		nextGroup=0;
 	}
+	
 
+	public Groups copyGroup(){
+		Groups g=new Groups(this);
+		return g;
+	}
 	public boolean contains(int key){
 		return groups.containsKey(key);
 	}
