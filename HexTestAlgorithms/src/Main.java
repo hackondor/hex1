@@ -20,7 +20,7 @@ public class Main {
 			 gui.setVisible(true);
 			 //g.addPlayer(new Algorithm2("GoodIA"));
 			 
-			 g.addPlayer("Player 2");g.addPlayer(new Algorithm("StupidIA"));
+			 g.addPlayer(new Algorithm("StupidIA"));g.addPlayer("Player 2");
 			
 
 	}
