@@ -139,6 +139,14 @@ public abstract class AlgorithmsDefinition extends Observable{
 			return false;
 	}
 
+	
+	public int getRowsNumber(){
+		return board.GetRowsNumber();
+	}
+	
+	public int getColumnsNumber(){
+		return board.GetColumnsNumber();
+	}
 
 
 
