@@ -23,14 +23,7 @@ public class Game {
 	private Command onFinishCommand;
 	
 	public Game(){
-		board = new Board(Utility.DEFAULT_NUMBERS_OF_ROWS,Utility.DEFAULT_NUMBERS_OF_COLUMNS);
-		arbiter = new Arbiter(board);
-		arbiter.addFinishGameListener(new FinishActionListener());
-		vm = new HexGuiVm(board,arbiter);
-		gui = new HexGui(vm);
-		arbiter.addFinishGameListener(gui);
-		board.addObserver(vm);
-		
+		this(Utility.DEFAULT_NUMBERS_OF_ROWS,Utility.DEFAULT_NUMBERS_OF_COLUMNS);
 	}
 	
 	public Game(int rows,int columns){
@@ -39,8 +32,8 @@ public class Game {
 		arbiter.addFinishGameListener(new FinishActionListener());
 		vm = new HexGuiVm(board,arbiter);
 		gui = new HexGui(vm);
-		board.addObserver(vm);
 		arbiter.addFinishGameListener(gui);
+		board.addObserver(vm);
 		
 	}
 	
