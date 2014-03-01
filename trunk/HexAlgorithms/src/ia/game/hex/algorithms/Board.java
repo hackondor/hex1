@@ -123,5 +123,15 @@ public class Board extends Observable {
 		return lastNodePlaced;
 	}
 	
+	
+	public Board takeACopy(){
+		Board b = new Board(rows,columns);
+		b.lastNodePlaced = lastNodePlaced;
+		for(int i=0;i<rows;i++)
+			for(int j=0;j<columns;j++)
+				b.board[i][j] = board[i][j];
+		return b;
+	}
+	
 
 }

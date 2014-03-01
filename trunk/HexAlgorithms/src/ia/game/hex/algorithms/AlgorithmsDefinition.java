@@ -34,6 +34,13 @@ public abstract class AlgorithmsDefinition extends Observable{
 		this.player = player;
 	}
 
+	/**
+	 * 
+	 * @return l'identificativo assegnato al giocatore
+	 */
+	public int getPlayer(){
+		return player;
+	}
 
 	private long startTime;
 	private long endTime;
@@ -146,6 +153,14 @@ public abstract class AlgorithmsDefinition extends Observable{
 	
 	public int getColumnsNumber(){
 		return board.GetColumnsNumber();
+	}
+	/**
+	 * take a copy of the current Board state
+	 * @return the current istance of Board in a new object
+	 */
+	public Board getBoard(){
+		return board.takeACopy();
+		
 	}
 
 
