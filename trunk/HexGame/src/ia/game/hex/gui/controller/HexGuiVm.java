@@ -28,6 +28,8 @@ public class HexGuiVm implements Observer {
 
 	public HexGuiVm(Board b,Arbiter a){
 		board = b;
+		number_rows = board.GetRowsNumber();
+		number_columns = board.GetColumnsNumber();
 		side = Utility.DEFAULT_SIDE;
 		apotema = side*0.866025;	
 		selected_cell = null;
