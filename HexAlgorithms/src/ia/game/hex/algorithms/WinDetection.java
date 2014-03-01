@@ -1,6 +1,5 @@
 package ia.game.hex.algorithms;
 
-import java.lang.management.PlatformLoggingMXBean;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class WinDetection {
 
 	public boolean isWin(){
 		Node last=board.getLastNodePlaced();
-		if(board.belongTo(last.getX(), last.getY())==player 
+		if(board.belongTo(last.getX(), last.getY())!=player 
 				|| 
 			groups.contains(Node.Node2Int(last,nRows)))
 			return win;
@@ -38,7 +37,7 @@ public class WinDetection {
 	}
 	public boolean isWin_forArbiter(){
 		Node last=board.getLastNodePlaced();
-		if(board.belongTo(last.getX(), last.getY())==player 
+		if(board.belongTo(last.getX(), last.getY())!=player 
 				|| 
 			groups.contains(Node.Node2Int(last,nRows)))
 			return win;
