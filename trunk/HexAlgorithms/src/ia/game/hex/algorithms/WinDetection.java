@@ -38,7 +38,8 @@ public class WinDetection {
 private boolean _winDetect(Node node){
 	
 		//Carico nelle variabili i e j le coordinate dell'ultima pedina inserita
-		
+		if(node==null)
+			return false;
 		int i=node.getX();
 		int j=node.getY();
 
