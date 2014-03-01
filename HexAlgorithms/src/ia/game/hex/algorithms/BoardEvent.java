@@ -4,10 +4,32 @@ public class BoardEvent {
 
 	private int x;
 	private int y;
+	private int action;
+	private int player;
+	public static final int SET=0;
+	public static final int UNSET=1;
 	
-	public BoardEvent(int x,int y){
+	public BoardEvent(int x,int y,int action, int player){
 		this.x = x;
 		this.y = y;
+		this.action=action;
+		this.player=player;
+	}
+
+	public int getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(int player) {
+		this.player = player;
+	}
+
+	public int getAction() {
+		return action;
+	}
+
+	public void setAction(int action) {
+		this.action = action;
 	}
 
 	public int getX() {
