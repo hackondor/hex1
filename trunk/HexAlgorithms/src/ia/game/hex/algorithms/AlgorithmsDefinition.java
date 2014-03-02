@@ -1,6 +1,7 @@
 package ia.game.hex.algorithms;
 
 import java.util.Observable;
+import java.util.Observer;
 
 public abstract class AlgorithmsDefinition extends Observable{
 
@@ -163,7 +164,9 @@ public abstract class AlgorithmsDefinition extends Observable{
 		
 	}
 
-
+	public void BoardRegister(Observer o){
+		board.addObserver(o);
+	}
 
 
 

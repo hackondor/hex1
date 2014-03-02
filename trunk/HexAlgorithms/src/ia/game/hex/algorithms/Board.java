@@ -16,6 +16,13 @@ class Info{
 		busy = false;
 		player = Costant.NOPLAYER;
 	}
+	Info(boolean busy, int player){
+		this.busy=busy;
+		this.player=player;
+	}
+	public Info takeACopy(){
+		return new Info(busy,player);
+	}
 }
 
 /***
@@ -132,7 +139,7 @@ public class Board extends Observable {
 		b.lastNodePlaced = lastNodePlaced;
 		for(int i=0;i<rows;i++)
 			for(int j=0;j<columns;j++)
-				b.board[i][j] = board[i][j];
+				b.board[i][j] = board[i][j].takeACopy();
 		return b;
 	}
 	
