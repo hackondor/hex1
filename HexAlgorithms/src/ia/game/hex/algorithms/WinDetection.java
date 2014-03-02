@@ -4,7 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-
+/**
+ * WinDetection è una classe che monitora lo stato del gioco per riconoscere la vittoria di
+ * un singolo giocatore.
+ * Per funzionare ha bisogno di "Osservare" la Board del gioco, in quanto ad ogni modifica
+ * della board, si aggiorneranno le strutture dati interne.
+ * Per utilizzarla all'interno degli algoritmi di IA, in cui vengono eplorate tutte le
+ * possibili mosse è necessario:
+ * - creare 2 istanze di tale classe assegnarle una al giocatore corrente
+ * 	 e l'altra al giocatore avversario
+ * - registrare la classe SIA alla Board del gioco SIA alla Board copia utilizzata nell'algoritmo;
+ * - avere cura di invocare il metodo Board.resetPosition(i,j) sull'ultima pedina posizionata in modo
+ *   che l'algoritmo ripristini lo stato precedente alla mossa
+ * - 
+ * @author Pietro
+ *
+ */
 public class WinDetection implements Observer {
 
 	private Groups groups;
@@ -12,34 +27,36 @@ public class WinDetection implements Observer {
 	private int nRows,nCols;
 	private int player;
 	ArrayList<Groups> GroupsList;
-
+	private int f;
 	public WinDetection(int player, int nRows, int nCols){
 		groups=new Groups();
 		GroupsList=new ArrayList<Groups>();
-		GroupsList.add(groups.copyGroup());
 		this.player=player;
 		this.nRows=nRows;
 		this.nCols=nCols;
+		f=0;
 	}
 
 	public boolean isWin(){
 
+		boolean win = _winDetect();
 
-		return _winDetect();
+		return win;
 
 	}
-//	public boolean isWin_forArbiter(){
-//		Node last=board.getLastNodePlaced();
-//		if(board.belongTo(last.getX(), last.getY())!=player 
-//				|| 
-//				groups.contains(Node.Node2Int(last,nRows)))
-//			return win;
-//		win=_winDetect( board.getLastNodePlaced());
-//		return win;
-//	}
+	//	public boolean isWin_forArbiter(){
+	//		Node last=board.getLastNodePlaced();
+	//		if(board.belongTo(last.getX(), last.getY())!=player 
+	//				|| 
+	//				groups.contains(Node.Node2Int(last,nRows)))
+	//			return win;
+	//		win=_winDetect( board.getLastNodePlaced());
+	//		return win;
+	//	}
 
 	private void undo(){
 		groups=GroupsList.remove(GroupsList.size()-1);
+
 	}
 	private boolean _winDetect(){
 
@@ -123,10 +140,16 @@ public class WinDetection implements Observer {
 			}
 		}
 		else{
-			if(player==e.getPlayer())
-			undo();
+			if(player==e.getPlayer()){
+				//System.out.println("undo: "+i+" "+j);
+				undo();
+			}
+
 		}
 	}
 
+	public int getGroupsListSize(){
+		return GroupsList.size();
+	}
 
 }
