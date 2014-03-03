@@ -35,7 +35,7 @@ public class Board extends Observable {
 	private int columns;
 	private Info[][] board;
 	private int number_of_piece = 0;						// numero di pedine sulla scacchiera
-	private boolean isStealLegal = true;
+	private boolean isStealDone = false;
 	/**
 	 * Crea una bord delle dimnesione @rows x @columns
 	 * @param rows
@@ -57,7 +57,7 @@ public class Board extends Observable {
 	 * @param player
 	 * @return true se la mossa è lecita
 	 */
-	public boolean movePiece(int row,int column,int player){
+	public boolean placePiece(int row,int column,int player){
 
 		boolean check = false;
 		try{	
@@ -65,8 +65,6 @@ public class Board extends Observable {
 				board[row][column].player = player;
 				board[row][column].busy = true;
 				number_of_piece++;
-				if(isStealLegal && getNumberOfPiece()>1)
-					isStealLegal=false;
 				check = true;
 				lastNodePlaced=new Node(row, column);
 				this.setChanged();
@@ -90,8 +88,6 @@ public class Board extends Observable {
 		board[row][column].busy = false;
 		board[row][column].player = Costant.NOPLAYER;
 		number_of_piece--;
-		if (number_of_piece==1)
-			isStealLegal=true;
 		this.setChanged();
 		this.notifyObservers(new BoardEvent(row,column,BoardEvent.UNSET,oldPlayer));
 	}
@@ -122,9 +118,9 @@ public class Board extends Observable {
 	 * @param j
 	 * @param player il nuovo possessore della pedina
 	 */
-	public boolean setPiecePlayer(int i,int j,int player){
-		if(isStealLegal){
-			isStealLegal=false;
+	public boolean stealPiece(int i,int j,int player){
+		if(!isStealDone){
+			isStealDone=true;
 			board[i][j].player = player;
 			this.setChanged();
 			this.notifyObservers(new BoardEvent(i,j,BoardEvent.STEAL,player));
@@ -137,7 +133,7 @@ public class Board extends Observable {
 	public void resetFromSteal(int i, int j){		
 		int old=board[i][j].player;
 		board[i][j].player = (old+1)%2;
-		isStealLegal=true;
+		isStealDone=false;
 		this.setChanged();
 		this.notifyObservers(new BoardEvent(i,j,BoardEvent.UNSET,old));
 	}
@@ -156,7 +152,7 @@ public class Board extends Observable {
 		else
 			b.lastNodePlaced = null;
 		b.number_of_piece=number_of_piece;
-		b.isStealLegal=isStealLegal;
+		b.isStealDone=isStealDone;
 		for(int i=0;i<rows;i++)
 			for(int j=0;j<columns;j++)
 				b.board[i][j] = board[i][j].takeACopy();
@@ -164,7 +160,7 @@ public class Board extends Observable {
 	}
 
 	public boolean isStealLegal(){
-		return isStealLegal;
+		return !isStealDone && number_of_piece==1;
 	}
 
 }
