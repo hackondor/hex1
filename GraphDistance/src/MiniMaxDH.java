@@ -47,6 +47,7 @@ public class MiniMaxDH extends AlgorithmsDefinition {
 		}
 		if(getNumberOfPiece()!=0){
 			lastPlaced = getLastNodePlaced();
+			System.out.println("last:"+lastPlaced.getX()+" "+lastPlaced.getY());//test
 			graph.placePiece(lastPlaced.getX(),lastPlaced.getY(),HexGraph.CUT_PLAYER);
 			graphOpponent.placePiece(lastPlaced.getX(),lastPlaced.getY(),HexGraph.CONNECT_PLAYER);
 		}
@@ -54,16 +55,23 @@ public class MiniMaxDH extends AlgorithmsDefinition {
 		int maxUtility = -1;
 		bestMove = new Node(-1,-1);
 		lastEmpty = new Node(-1,-1);
-		for(int i=0;i<rows;i++){
-			for(int j=0;j<columns;j++){
+		
+		boolean stop = false;
+		for(int i=0;i<rows && !stop;i++){
+			for(int j=0;j<columns && !stop;j++){
 				if(!graph.isBusy(i, j)){
 					lastEmpty = new Node(i,j);
 					graph.placePiece(i, j,HexGraph.CONNECT_PLAYER);
 					graphOpponent.placePiece(i, j,HexGraph.CUT_PLAYER);
 					int x = valoreMin();
+					System.out.println("utility:"+x);//test
 					if(maxUtility < x){
 						maxUtility = x;
 						bestMove.setX(i);bestMove.setY(j);
+					}	
+					if(maxUtility==1){				//mi fermo alla prima mossa utile
+						stop = true;
+						System.out.println("mi fermo alla prima mossa utile");
 					}
 					graph.removePiece(i, j);
 					graphOpponent.removePiece(i, j);
@@ -72,11 +80,13 @@ public class MiniMaxDH extends AlgorithmsDefinition {
 		}
 		try {
 			if(!isBusy(bestMove.getX(),bestMove.getY())){
+				System.out.println("best move:"+bestMove.getX()+" "+bestMove.getY());
 				placePiece(bestMove.getX(),bestMove.getY());
 				graph.placePiece(bestMove.getX(),bestMove.getY(), HexGraph.CONNECT_PLAYER);
 				graphOpponent.placePiece(bestMove.getX(),bestMove.getY(), HexGraph.CUT_PLAYER);
 			}
 			else{
+				System.out.println("best move in a busy cell");//test
 				placePiece(lastEmpty.getX(),lastEmpty.getY());
 				graph.placePiece(lastEmpty.getX(),lastEmpty.getY(), HexGraph.CONNECT_PLAYER);
 				graphOpponent.placePiece(lastEmpty.getX(),lastEmpty.getY(), HexGraph.CUT_PLAYER);
@@ -85,58 +95,75 @@ public class MiniMaxDH extends AlgorithmsDefinition {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	
+		
 	}
 	
 	private int valoreMax(){
+		System.out.println("valore Max");
+		//graph.viewGraph("MAX");
 		int utilita;
 		if((utilita = TestTerminazione())!=-1)
 			return utilita;
-		
 		int v = -2;
-		for(int i=0;i<rows;i++)
-			for(int j=0;j<columns;j++){
+		boolean stop = false;
+		for(int i=0;i<rows && !stop;i++){
+			for(int j=0;j<columns && !stop;j++){
 				if(!graph.isBusy(i, j)){
-					graph.placePiece(i, j, graph.CONNECT_PLAYER);
-					graphOpponent.placePiece(i, j, graph.CUT_PLAYER);
+					graph.placePiece(i, j, HexGraph.CONNECT_PLAYER);
+					graphOpponent.placePiece(i, j, HexGraph.CUT_PLAYER);
 					v = max(v,valoreMin());
 					graph.removePiece(i, j);
 					graphOpponent.removePiece(i, j);
-					
+					//stop = true;
 				}
 			}
-				
+		}
 		
 		return v;
 	}
 	
 	private int valoreMin(){
+		System.out.println("valore Min");
+		//graph.viewGraph("MIN");
+		//graphOpponent.viewGraph();
+		
 		int utilita;
 		if((utilita = TestTerminazione())!=-1)
 			return utilita;
 		
 		int v = 2;
-		for(int i=0;i<rows;i++)
-			for(int j=0;j<columns;j++){
+		boolean stop = false;
+		for(int i=0;i<rows && !stop;i++){
+			for(int j=0;j<columns && !stop;j++){
 				if(!graph.isBusy(i, j)){
-					graph.placePiece(i, j, graph.CUT_PLAYER);
-					graphOpponent.placePiece(i, j, graph.CONNECT_PLAYER);
+					graph.placePiece(i, j, HexGraph.CUT_PLAYER);
+					graphOpponent.placePiece(i, j, HexGraph.CONNECT_PLAYER);
 					v = min(v,valoreMax());
+					
 					graph.removePiece(i, j);
 					graphOpponent.removePiece(i, j);
 					
+					//stop = true;
 				}
-			}
 				
+			}
+			
+		}
 		
 		return v;
 	}
 	
 	
 	private int TestTerminazione(){
-		if(graph.getDistance() == 1)	//ho vinto
+		if(graph.getDistance() == 1){	//ho vinto
+			
 			return 1;
-		else if(graphOpponent.getDistance()==1)
+		}
+		else if(graphOpponent.getDistance()==1){
+			//graphOpponent.viewGraph();
 			return 0;
+		}
 		else 
 			return -1;
 	}
@@ -151,6 +178,10 @@ public class MiniMaxDH extends AlgorithmsDefinition {
 		if(x>=y)
 			return x;
 		else return y;
+	}
+	
+	public void printGraph(){
+		graph.viewGraph("");
 	}
 
 }
