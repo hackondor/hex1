@@ -84,7 +84,7 @@ public class HexGuiVm implements Observer {
 				shape.closePath();
 				c.setShape(shape);
 
-				cells[i][j] = c;
+				cells[j][i] = c;
 
 				yc = (float) (yc +2*apotema + Utility.MARGIN);
 			}	
@@ -153,6 +153,7 @@ public class HexGuiVm implements Observer {
 					}
 				}
 				i--;j--;
+				System.out.println("Selected cell:"+i+" "+j);//test
 				//System.out.println(find);	//test
 				if(find){
 					if(board.isBusy(i, j) && board.getNumberOfPiece()==1)
