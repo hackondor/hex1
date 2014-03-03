@@ -15,7 +15,7 @@ public class Main {
 	public static void main(String args[]){
 		
 		
-			 Game g = new Game();
+			 Game g = new Game(3,3);
 			 JFrame gui = g.getGui();
 			 gui.setVisible(true);
 			 //g.addPlayer(new Algorithm2("GoodIA"));
