@@ -156,14 +156,20 @@ public class HexGuiVm implements Observer {
 				System.out.println("Selected cell:"+i+" "+j);//test
 				//System.out.println(find);	//test
 				if(find){
-					if(board.isBusy(i, j) && board.getNumberOfPiece()==1)
+					if(board.isBusy(i, j) && board.isStealLegal()) {
 						board.setPiecePlayer(i, j, arbiter.getCurrentPlayer());
+						arbiter.nextStep();
+					}
 					else if(board.movePiece(i, j,arbiter.getCurrentPlayer())){
 						//cells[i][j].setColor(arbiter.getCurrentPlayerColor());
-//						System.out.println(i+" "+j);
-						System.out.println("Player: " + arbiter.getCurrentPlayer());
+////						System.out.println(i+" "+j);
+//						System.out.println("Player: " + arbiter.getCurrentPlayer());
+						arbiter.nextStep();
 					}
-					arbiter.nextStep();
+					else
+						System.out.println("Mossa non consentita");
+
+					
 				}
 			}
 

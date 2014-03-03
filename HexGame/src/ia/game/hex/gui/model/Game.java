@@ -53,8 +53,8 @@ public class Game {
 	 * @param a: IA player
 	 */
 	public void addPlayer(AlgorithmsDefinition a){
-		a.setBoard(board);
 		arbiter.addPlayer(a);
+		
 		
 	}
 	
