@@ -26,12 +26,28 @@ public class MiniMaxAlgorithm extends AlgorithmsDefinition {
 
 	}
 
-
+	@Override
+	public void setBoard(Board b){
+		super.setBoard(b);
+		System.out.println("set board");
+		BoardRegister(maxWinDetection);
+		BoardRegister(minWinDetection);
+	}
+	
+	@Override
+	public void setPlayer(int p){
+		super.setPlayer(p);
+		max= getPlayer();
+		min = (getPlayer()+1)%2;
+		maxWinDetection = new WinDetection(max,3,3);
+		minWinDetection = new WinDetection(min,3,3);
+	}
 
 	@Override
 	public void run() {
 		//Ottengo la copia della board corrente
 		boardCopy = getBoard();
+		
 		/* Controllo se l'oggetto è stato inizializzato
 		 *  Se non lo è 
 		 *  - assegno i valori ai giocatori min e max
@@ -39,12 +55,8 @@ public class MiniMaxAlgorithm extends AlgorithmsDefinition {
 		 *  - li registro alla board del gioco
 		 */
 		if(!isInitialized){
-			max= getPlayer();
-			min = (getPlayer()+1)%2;
-			maxWinDetection = new WinDetection(max,3,3);
-			minWinDetection = new WinDetection(min,3,3);
-			BoardRegister(maxWinDetection);
-			BoardRegister(minWinDetection);
+			
+			
 			isInitialized=true;
 		}
 		//Registro i WinDetection alla copia della board
@@ -64,6 +76,7 @@ public class MiniMaxAlgorithm extends AlgorithmsDefinition {
 		while(!stop && i<rows ){
 			j=0;
 			while(!stop && j<columns){
+				
 				if(!boardCopy.isBusy(i, j)){
 					lastFreeI=i;
 					lastFreeJ=j;
@@ -71,9 +84,18 @@ public class MiniMaxAlgorithm extends AlgorithmsDefinition {
 					x = valoreMin();
 					boardCopy.resetPosition(i,j);
 				}
+				else if(boardCopy.isBusy(i, j) && boardCopy.isStealLegal())
+				{
+					System.out.println("sono entrato");
+					lastFreeI=i;
+					lastFreeJ=j;
+					boardCopy.setPiecePlayer(i, j,max);
+					x = valoreMin();
+					boardCopy.resetFromSteal(i, j);
+				}
 				j++;
 				if(x == 1) stop = true;	//mi fermo alla prima mossa utile.
-				System.out.println(i+","+(j-1)+" x:"+x);
+//				System.out.println(i+","+(j-1)+" x:"+x);
 			}
 			i++;
 		}
