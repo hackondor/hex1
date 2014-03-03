@@ -72,7 +72,7 @@ public abstract class AlgorithmsDefinition extends Observable{
 		if(actionPlayed)
 			throw new MultipleActionExeption();
 		if(!actionPlayed)
-			placementFine = board.movePiece(i, j, player);
+			placementFine = board.placePiece(i, j, player);
 		if(!placementFine)
 			throw new InvalidPlacementException();
 		actionPlayed = true;
@@ -97,7 +97,7 @@ public abstract class AlgorithmsDefinition extends Observable{
 			throw new InvalidStealException();
 
 		}
-		board.setPiecePlayer(i, j,player);
+		board.stealPiece(i, j,player);
 		actionPlayed = true;
 
 	}

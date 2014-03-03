@@ -102,8 +102,9 @@ public class Arbiter implements Observer{
 	 * Aggiunge un giocatore artificiale
 	 */
 	public void addPlayer(AlgorithmsDefinition a){
-		a.setPlayer(players.size());
 		a.setBoard(board);
+		a.setPlayer(players.size());
+		
 		Player p = new Player(a.getName(),a,color[players.size()]);
 		players.add(p);
 		a.addObserver(this);	//aggiunta di Arbiter alla lista degli ascoltatori che attendono la l'evento che segnala la fine della mossa dell'algoritmo
