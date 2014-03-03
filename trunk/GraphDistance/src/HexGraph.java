@@ -12,7 +12,7 @@ import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.SparseMultigraph;
+import edu.uci.ics.jung.graph.SparseGraph;
 import edu.uci.ics.jung.graph.util.Pair;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
@@ -24,14 +24,14 @@ public class HexGraph {
 	public final static int INF = 9999;
 	public final static int EMPTY_CELL = -1;
 	public final static int CONNECT_PLAYER = 1;
-	public final static int CUT_PLAYER = 1;
+	public final static int CUT_PLAYER = 0;
 	public final static int PLAYER_VERT = 1;
 	public final static int PLAYER_HOR = 0;
 	
 	
 	private int rows = -1;
 	private int columns = -1;
-	private Graph<Node, Integer> g = new SparseMultigraph<Node, Integer>();		//grafo non direzionato
+	private Graph<Node, Integer> g = new SparseGraph<Node, Integer>();		//grafo non direzionato
 	private int k = 1;															//progressivo con cui vengono numerati gli archi del grafo					
 	private Node[][] nodes;														//mantiene i riferimenti ai nodi del grafo
 	private Node s = new Node(-1,-1),t = new Node(8,8);							//nodo sorgente e nodo destinazione del grafo
@@ -102,6 +102,8 @@ public class HexGraph {
 				pairs_added_edge = new ArrayList<Pair<Node>>();
 				adjacents = g.getNeighbors(n);
 				
+				
+				
 				//realizzo i collegamenti tra tutte le coppie di nodi adiacenti liberi
 				for(Node node1:adjacents){
 					for(Node node2:adjacents){
@@ -116,7 +118,8 @@ public class HexGraph {
 				}
 				
 				//rimozione del nodo dal grafo. Questo cancellerà anche tutti gli archi tra il nodo e gli adiacenti
-				g.removeVertex(n);
+				if(!g.removeVertex(n))
+					System.out.println("not remove");
 
 				return true;
 			}
@@ -308,21 +311,24 @@ public class HexGraph {
 			Number distance;
 			try{
 				distance= alg.getDistance(s, t);
+				if(distance == null)	//percorso nn esistente
+					return INF;
+				else
+					return distance.intValue();
 			}catch(IllegalArgumentException e){
-				return INF;
+				e.printStackTrace();
+			return INF;
 			}			
-			return distance.intValue();
-
 		}
 		
 		public boolean isBusy(int i,int j){
 			return nodes[i][j].getPlayer() != EMPTY_CELL;
 		}
 		
-		public void viewGraph(){
+		public void viewGraph(String name){
 			// The Layout<V, E> is parameterized by the vertex and edge types
 			Layout<Node, Integer> layout = new CircleLayout(g);
-			layout.setSize(new Dimension(700,700)); // sets the initial size of the space
+			layout.setSize(new Dimension(600,600)); // sets the initial size of the space
 			// The BasicVisualizationServer<V,E> is parameterized by the edge types
 			BasicVisualizationServer<Node,Integer> vv =
 					new BasicVisualizationServer<Node,Integer>(layout);
@@ -332,7 +338,7 @@ public class HexGraph {
 			vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
 			vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
 
-			JFrame frame = new JFrame("Simple Graph View");
+			JFrame frame = new JFrame(name);
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.getContentPane().add(vv);
 			frame.pack();
