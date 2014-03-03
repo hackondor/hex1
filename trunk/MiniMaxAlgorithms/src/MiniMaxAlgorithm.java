@@ -1,70 +1,77 @@
 import ia.game.hex.algorithms.AlgorithmsDefinition;
 import ia.game.hex.algorithms.Board;
 import ia.game.hex.algorithms.InvalidPlacementException;
+import ia.game.hex.algorithms.InvalidStealException;
 import ia.game.hex.algorithms.MultipleActionExeption;
+import ia.game.hex.algorithms.Node;
 import ia.game.hex.algorithms.WinDetection;
 
 
 public class MiniMaxAlgorithm extends AlgorithmsDefinition {
 
 
-	private Board boardCopy;
+	private Board localBoard;
 	private WinDetection maxWinDetection;
 	private WinDetection minWinDetection;
 	private int rows;
 	private int columns;
 	private int max,min;
+	private Node lastNode;
 	/*
 	 * Questo attributo ci dice se l'oggetto è stato inizializzato.
 	 */
-	private boolean isInitialized;
+
 
 	public MiniMaxAlgorithm(String name) {
 		super(name);
-		//setto a false il flag di controllo dell'inizializzazione
-		isInitialized=false;
-
+		lastNode=new Node(-1,-1);
 	}
 
 	@Override
 	public void setBoard(Board b){
 		super.setBoard(b);
-		System.out.println("set board");
-		BoardRegister(maxWinDetection);
-		BoardRegister(minWinDetection);
+		//Creo la board locale su cui lavorerà l'algoritmo
+		localBoard=new Board(getRowsNumber(),getColumnsNumber());
+		rows = this.getRowsNumber();
+		columns = this.getColumnsNumber();
+
 	}
-	
+
 	@Override
 	public void setPlayer(int p){
 		super.setPlayer(p);
+		// indico con max il player corrente e con min l'avversario
 		max= getPlayer();
 		min = (getPlayer()+1)%2;
 		maxWinDetection = new WinDetection(max,3,3);
 		minWinDetection = new WinDetection(min,3,3);
+		localBoard.addObserver(maxWinDetection);
+		localBoard.addObserver(minWinDetection);
+		
 	}
 
 	@Override
 	public void run() {
-		//Ottengo la copia della board corrente
-		boardCopy = getBoard();
 		
-		/* Controllo se l'oggetto è stato inizializzato
-		 *  Se non lo è 
-		 *  - assegno i valori ai giocatori min e max
-		 *  - creo gli oggetti di detection della vittoria
-		 *  - li registro alla board del gioco
-		 */
-		if(!isInitialized){
+		// node conterrà gli indici dell'ultima pedina inserita sulla Board reale
+		Node node = getLastNodePlaced();
+		
+		
+		if(node!=null)			//se almeno una pedina è stata piazzata
 			
-			
-			isInitialized=true;
-		}
-		//Registro i WinDetection alla copia della board
-		boardCopy.addObserver(maxWinDetection);
-		boardCopy.addObserver(minWinDetection);
+			/* c'è stato uno steal in quanto l'ultima pedina sulla board l'ha inserita l'algoritmo stesso
+			 * aggiorno la board locale con tale mossa		
+			 */
+			if(node.getX()==lastNode.getX() && node.getY()==lastNode.getY()){
 
-		rows = this.getRowsNumber();
-		columns = this.getColumnsNumber();
+				localBoard.stealPiece(node.getX(), node.getY(), min);
+			}
+			/*
+			 * aggiorno la board locale con l'ultima pedina inserita
+			 */
+			else{
+				localBoard.placePiece(node.getX(), node.getY(), min);
+			}
 
 		/*
 		 * Esecuzione dell'algoritmo MiniMax
@@ -72,53 +79,82 @@ public class MiniMaxAlgorithm extends AlgorithmsDefinition {
 		boolean stop = false;
 		int i=0,j=0,x=-1;
 		int lastFreeI=0,lastFreeJ=0;
+		int stealI=-1,stealJ =-1;
 
 		while(!stop && i<rows ){
 			j=0;
 			while(!stop && j<columns){
-				
-				if(!boardCopy.isBusy(i, j)){
+					/*
+					 * se la cella i-j è libera posso piazzare la pedina			
+					 */
+				if(!localBoard.isBusy(i, j)){
+					
 					lastFreeI=i;
 					lastFreeJ=j;
-					boardCopy.movePiece(i, j,max);
+					
+					localBoard.placePiece(i, j,max);
 					x = valoreMin();
-					boardCopy.resetPosition(i,j);
+					localBoard.resetPosition(i,j);
+
 				}
-				else if(boardCopy.isBusy(i, j) && boardCopy.isStealLegal())
+				/*
+				 * se la cella è occupata non posso piazzare la pedina ma potrei rubarla
+				 */
+				else if(localBoard.isBusy(i, j) && localBoard.isStealLegal())
 				{
-					System.out.println("sono entrato");
-					lastFreeI=i;
-					lastFreeJ=j;
-					boardCopy.setPiecePlayer(i, j,max);
+					stealI=i;
+					stealJ=j;
+					localBoard.stealPiece(i, j,max);
 					x = valoreMin();
-					boardCopy.resetFromSteal(i, j);
+					localBoard.resetFromSteal(i, j);
 				}
 				j++;
 				if(x == 1) stop = true;	//mi fermo alla prima mossa utile.
-//				System.out.println(i+","+(j-1)+" x:"+x);
+
 			}
 			i++;
 		}
-		
+
 		/*
-		 * Piazzamento della pedina
+		 * Esecuzione della mossa
 		 */
 		try {
 			/*
 			 * Se la cella in cui mi sono fermato non è occupata posiziono lì la mia pedina
+			 * e aggiorno la board locale
 			 */
-			if(!isBusy(i-1, j-1))
+			if(!isBusy(i-1, j-1)){
 				placePiece(i-1, j-1);
+				localBoard.placePiece(i-1, j-1, max);
+				lastNode=new Node(i-1,j-1);
+			}
+
 			
-			// La cella potrebbe essere occupata se l'algoritmo si è fermato all'ultima cella
-			// e questa già è stata occupata precedentemente
 			else
-				placePiece(lastFreeI, lastFreeJ);
+				/*
+				 * se la cella dove mi sono fermato è occupata ma l'algoritmo ha scelto di
+				 * rubare la pedina (stealI diverso da -1) allora rubo e aggiorno la
+				 * board locale
+				 */
+				if (stealI!=-1){
+
+					localBoard.stealPiece(stealI, stealJ, max);
+					stealPiece(stealI, stealJ);
+				}
+			/*
+			 * altrimenti devo piazzare la pedina in una posizione libera
+			 */
+				else{
+					localBoard.placePiece(lastFreeI, lastFreeJ, max);
+					placePiece(lastFreeI, lastFreeJ);
+					lastNode=new Node(lastFreeI,lastFreeJ);
+				}
 		} catch (InvalidPlacementException | MultipleActionExeption e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidStealException e) {
 			e.printStackTrace();
 		}
-		
+
 
 	}
 
@@ -136,10 +172,10 @@ public class MiniMaxAlgorithm extends AlgorithmsDefinition {
 
 		for(int i = 0;i<rows;i++){
 			for(int j = 0;j<columns;j++){
-				if(!boardCopy.isBusy(i, j)){
-					boardCopy.movePiece(i, j,max);
+				if(!localBoard.isBusy(i, j)){
+					localBoard.placePiece(i, j,max);
 					v = max(v,valoreMin());
-					boardCopy.resetPosition(i,j);	
+					localBoard.resetPosition(i,j);	
 				}
 			}
 		}
@@ -160,11 +196,17 @@ public class MiniMaxAlgorithm extends AlgorithmsDefinition {
 
 		for(int i = 0;i<rows;i++){
 			for(int j = 0;j<columns;j++){
-				if(!boardCopy.isBusy(i, j)){
-					boardCopy.movePiece(i, j,min);
+				if(!localBoard.isBusy(i, j)){
+					localBoard.placePiece(i, j,min);
 					v = min(v,valoreMax());
-					boardCopy.resetPosition(i,j);
-
+					localBoard.resetPosition(i,j);
+				}
+				else if(localBoard.isBusy(i, j) && localBoard.isStealLegal())
+				{
+					//System.out.println("sono entrato. Num: "+boardCopy.getNumberOfPiece()+"legal "+boardCopy.isStealLegal());
+					localBoard.stealPiece(i, j,max);
+					v = max(v,valoreMax());
+					localBoard.resetFromSteal(i, j);
 				}
 			}
 		}

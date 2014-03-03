@@ -9,7 +9,7 @@ public class Main {
 		
 		//g.addPlayer(new MiniMaxAlgorithm("MiniMax2"));
 		g.addPlayer(new MiniMaxAlgorithm("MiniMax"));
-		//g.addPlayer("Giggino2");
+//		g.addPlayer("Giggino2");
 		
 	
 		
