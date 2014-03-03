@@ -157,10 +157,10 @@ public class HexGuiVm implements Observer {
 				//System.out.println(find);	//test
 				if(find){
 					if(board.isBusy(i, j) && board.isStealLegal()) {
-						board.setPiecePlayer(i, j, arbiter.getCurrentPlayer());
+						board.stealPiece(i, j, arbiter.getCurrentPlayer());
 						arbiter.nextStep();
 					}
-					else if(board.movePiece(i, j,arbiter.getCurrentPlayer())){
+					else if(board.placePiece(i, j,arbiter.getCurrentPlayer())){
 						//cells[i][j].setColor(arbiter.getCurrentPlayerColor());
 ////						System.out.println(i+" "+j);
 //						System.out.println("Player: " + arbiter.getCurrentPlayer());
