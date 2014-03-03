@@ -8,6 +8,8 @@ public class BoardEvent {
 	private int player;
 	public static final int SET=0;
 	public static final int UNSET=1;
+	public static final int STEAL = 2;
+	public static final int RESET_STEAL = 3;
 	
 	public BoardEvent(int x,int y,int action, int player){
 		this.x = x;

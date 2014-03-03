@@ -27,7 +27,7 @@ public class WinDetection implements Observer {
 	private int nRows,nCols;
 	private int player;
 	ArrayList<Groups> GroupsList;
-	private int f;
+	private int f=0;
 	public WinDetection(int player, int nRows, int nCols){
 		groups=new Groups();
 		GroupsList=new ArrayList<Groups>();
@@ -94,15 +94,16 @@ public class WinDetection implements Observer {
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
-
+//		System.out.println("Player "+player+" number "+(++f));
 		BoardEvent e=(BoardEvent)arg1;
 		int i=e.getX();
 		int j=e.getY();
-		if(e.getAction()==BoardEvent.SET && player==e.getPlayer()){
+		if((e.getAction()==BoardEvent.SET || e.getAction()==BoardEvent.STEAL) && player==e.getPlayer()){
 
 			Node node=new Node(i,j);
 			GroupsList.add(groups.copyGroup());
 			//segs conterrà la lista dei gruppi che contengono una pedina adiacente a (i,j)
+//			System.out.println("add "+ player+"size "+GroupsList.size());
 			List<Integer> segs=new ArrayList<Integer>();
 
 			//ciclo su tutte le celle adiacenti a (i,j)
@@ -139,13 +140,18 @@ public class WinDetection implements Observer {
 				groups.addToGroup(Node.Node2Int(new Node(i,j), nRows), segs.get(0));
 			}
 		}
-		else{
-			if(player==e.getPlayer()){
-				//System.out.println("undo: "+i+" "+j);
+		else if(e.getAction()==BoardEvent.UNSET && player==e.getPlayer()){
+//				System.out.println("undo: "+player+"size "+GroupsList.size());
 				undo();
-			}
-
 		}
+		else if(e.getAction()==BoardEvent.STEAL && player!=e.getPlayer()){
+			System.out.println(player+"size "+GroupsList.size());
+			GroupsList.add(groups.copyGroup());
+			System.out.println(player+"size "+GroupsList.size());
+			groups=GroupsList.get(GroupsList.size()-2);
+	}
+
+				
 	}
 
 	public int getGroupsListSize(){
