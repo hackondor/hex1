@@ -16,6 +16,7 @@ public class Arbiter implements Observer{
 	private Color[] color;
 	private ArrayList<GameListener> finishGameListener;
 	private WinDetection[] winDetection ;
+	private boolean isStealLegal;
 
 	public Arbiter(Board board){
 		this.board = board;
@@ -27,7 +28,7 @@ public class Arbiter implements Observer{
 		winDetection[1]=new WinDetection(1, board.GetRowsNumber(),board.GetColumnsNumber());
 		board.addObserver(winDetection[0]);
 		board.addObserver(winDetection[1]);
-
+		isStealLegal=true;
 	}
 
 	/**
@@ -102,6 +103,7 @@ public class Arbiter implements Observer{
 	 */
 	public void addPlayer(AlgorithmsDefinition a){
 		a.setPlayer(players.size());
+		a.setBoard(board);
 		Player p = new Player(a.getName(),a,color[players.size()]);
 		players.add(p);
 		a.addObserver(this);	//aggiunta di Arbiter alla lista degli ascoltatori che attendono la l'evento che segnala la fine della mossa dell'algoritmo

@@ -92,7 +92,7 @@ public abstract class AlgorithmsDefinition extends Observable{
 			System.out.println("is busy");
 			throw new InvalidStealException();
 		}
-		if(board.getNumberOfPiece()!=1){
+		if(!board.isStealLegal()){
 			System.out.println("piece: "+board.getNumberOfPiece());
 			throw new InvalidStealException();
 
