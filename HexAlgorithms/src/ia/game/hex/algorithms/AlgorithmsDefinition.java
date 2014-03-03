@@ -167,6 +167,14 @@ public abstract class AlgorithmsDefinition extends Observable{
 	public void BoardRegister(Observer o){
 		board.addObserver(o);
 	}
+	
+	/**
+	 * Restituisce l'utlima pedina inserita sulla Board
+	 * @return Node, che contiene la posizione dell'ultima pedina inserita sulla Board
+	 */
+	public Node getLastNodePlaced(){
+		return board.getLastNodePlaced();
+	}
 
 
 
