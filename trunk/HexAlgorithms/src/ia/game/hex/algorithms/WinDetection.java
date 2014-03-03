@@ -23,7 +23,7 @@ import java.util.Observer;
 public class WinDetection implements Observer {
 
 	private Groups groups;
-	private static final int PLAYER_VERT = 1;
+	private static final int PLAYER_HOR = 0;
 	private int nRows,nCols;
 	private int player;
 	ArrayList<Groups> GroupsList;
@@ -64,7 +64,7 @@ public class WinDetection implements Observer {
 
 
 		// se il turno è del giocatore verticale
-		if(player==PLAYER_VERT)
+		if(player==PLAYER_HOR)
 		{
 			//Controllo se esiste un gruppo che unisce una pedina dell'ultima riga con una pedina della prima riga
 			for(int x=0; x<nRows; x++)

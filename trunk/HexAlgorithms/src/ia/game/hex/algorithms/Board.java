@@ -136,7 +136,7 @@ public class Board extends Observable {
 	
 	public Board takeACopy(){
 		Board b = new Board(rows,columns);
-		b.lastNodePlaced = lastNodePlaced;
+		b.lastNodePlaced = new Node(lastNodePlaced.getX(),lastNodePlaced.getY());
 		for(int i=0;i<rows;i++)
 			for(int j=0;j<columns;j++)
 				b.board[i][j] = board[i][j].takeACopy();
