@@ -39,54 +39,6 @@ public class HexGraph {
 	private int direction = -1;
 	
 	/**
-	 * Informazioni di un nodo
-	 * @author Nich
-	 *
-	 */
-	private class Node{
-		private int row = -1;
-		private int column = -1;
-		private int player = -1;		//-1:empty cell
-		
-		public Node(int row, int colum) {
-			this.row = row;
-			this.column = colum;
-		}
-		
-		public Node(int row, int colum,int player) {
-			this.row = row;
-			this.column = colum;
-			this.player = player;
-		}
-		
-		public int getPlayer() {
-			return player;
-		}
-
-		public void setPlayer(int player) {
-			this.player = player;
-		}
-		
-
-		public int getRow() {
-			return row;
-		}
-		public void setRow(int row) {
-			this.row = row;
-		}
-		public int getColumn() {
-			return column;
-		}
-		public void setColum(int colum) {
-			this.column = colum;
-		}
-		
-		public String toString(){
-			return row+" ; "+column;
-		}
-		
-	}
-	/**
 	 * la classe custodisce le 2 azioni che realizzano e disfano l'operazione di Reduce 
 	 * @author Nich
 	 *
@@ -238,6 +190,7 @@ public class HexGraph {
 		commandHistory = new Stack<Command<Node>>();
 		nodes = new Node[rows][columns];
 		create();
+		
 	}
 	
 		
@@ -330,6 +283,21 @@ public class HexGraph {
 		public boolean isBusy(int i,int j){
 			return nodes[i][j].getPlayer() != EMPTY_CELL;
 		}
+		
+		public Node getSource(){
+			return s;
+		}
+		
+		public Node getSink(){
+			return t;
+		}
+		
+		
+		//test
+		public Graph<Node, Integer> getGraph(){
+			return g;
+		}
+		
 		
 		public  void  viewGraph(String name){
 			// The Layout<V, E> is parameterized by the vertex and edge types
