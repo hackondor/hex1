@@ -9,14 +9,8 @@ import java.util.Observer;
  * un singolo giocatore.
  * Per funzionare ha bisogno di "Osservare" la Board del gioco, in quanto ad ogni modifica
  * della board, si aggiorneranno le strutture dati interne.
- * Per utilizzarla all'interno degli algoritmi di IA, in cui vengono eplorate tutte le
- * possibili mosse è necessario:
- * - creare 2 istanze di tale classe assegnarle una al giocatore corrente
- * 	 e l'altra al giocatore avversario
- * - registrare la classe SIA alla Board del gioco SIA alla Board copia utilizzata nell'algoritmo;
- * - avere cura di invocare il metodo Board.resetPosition(i,j) sull'ultima pedina posizionata in modo
- *   che l'algoritmo ripristini lo stato precedente alla mossa
- * - 
+ *
+ * 
  * @author Pietro
  *
  */
@@ -27,38 +21,19 @@ public class WinDetection implements Observer {
 	private int nRows,nCols;
 	private int player;
 	ArrayList<Groups> GroupsList;
-	private int f=0;
 	public WinDetection(int player, int nRows, int nCols){
 		groups=new Groups();
 		GroupsList=new ArrayList<Groups>();
 		this.player=player;
 		this.nRows=nRows;
 		this.nCols=nCols;
-		f=0;
 	}
-
-	public boolean isWin(){
-
-		boolean win = _winDetect();
-
-		return win;
-
-	}
-	//	public boolean isWin_forArbiter(){
-	//		Node last=board.getLastNodePlaced();
-	//		if(board.belongTo(last.getX(), last.getY())!=player 
-	//				|| 
-	//				groups.contains(Node.Node2Int(last,nRows)))
-	//			return win;
-	//		win=_winDetect( board.getLastNodePlaced());
-	//		return win;
-	//	}
 
 	private void undo(){
 		groups=GroupsList.remove(GroupsList.size()-1);
 
 	}
-	private boolean _winDetect(){
+	public boolean isWin(){
 
 		//Carico nelle variabili i e j le coordinate dell'ultima pedina inserita
 
@@ -91,19 +66,24 @@ public class WinDetection implements Observer {
 
 
 
+	/*
+	 * Metodo che viene invocato all'arrivo di un evento della Board
+	 */
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		// TODO Auto-generated method stub
-//		System.out.println("Player "+player+" number "+(++f));
+		// Evento
 		BoardEvent e=(BoardEvent)arg1;
 		int i=e.getX();
 		int j=e.getY();
+		
+		/*
+		 * Evento di Set di una pedina o di rubamento della mossa da parte del giocatore corrente
+		 */
 		if((e.getAction()==BoardEvent.SET || e.getAction()==BoardEvent.STEAL) && player==e.getPlayer()){
 
 			Node node=new Node(i,j);
 			GroupsList.add(groups.copyGroup());
 			//segs conterrà la lista dei gruppi che contengono una pedina adiacente a (i,j)
-//			System.out.println("add "+ player+"size "+GroupsList.size());
 			List<Integer> segs=new ArrayList<Integer>();
 
 			//ciclo su tutte le celle adiacenti a (i,j)
@@ -140,14 +120,17 @@ public class WinDetection implements Observer {
 				groups.addToGroup(Node.Node2Int(new Node(i,j), nRows), segs.get(0));
 			}
 		}
+		// evento di UNSET corrispondente ad un metodo di restore della board
 		else if(e.getAction()==BoardEvent.UNSET && player==e.getPlayer()){
-//				System.out.println("undo: "+player+"size "+GroupsList.size());
+//				
 				undo();
 		}
+		// evento di rubamento della mossa da parte del player avversario
 		else if(e.getAction()==BoardEvent.STEAL && player!=e.getPlayer()){
-			System.out.println(player+"size "+GroupsList.size());
+			/* Aggiorno la mia struttura riportandola alla configurazione iniziale, ma mi salvo
+			*  lo stato precedente in caso di undo()
+			*/
 			GroupsList.add(groups.copyGroup());
-			System.out.println(player+"size "+GroupsList.size());
 			groups=GroupsList.get(GroupsList.size()-2);
 	}
 

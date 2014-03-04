@@ -16,7 +16,6 @@ public class Arbiter implements Observer{
 	private Color[] color;
 	private ArrayList<GameListener> finishGameListener;
 	private WinDetection[] winDetection ;
-	private boolean isStealLegal;
 
 	public Arbiter(Board board){
 		this.board = board;
@@ -28,7 +27,6 @@ public class Arbiter implements Observer{
 		winDetection[1]=new WinDetection(1, board.GetRowsNumber(),board.GetColumnsNumber());
 		board.addObserver(winDetection[0]);
 		board.addObserver(winDetection[1]);
-		isStealLegal=true;
 	}
 
 	/**
@@ -133,9 +131,6 @@ public class Arbiter implements Observer{
 			return false;
 	}
 
-//	public boolean isWin(Groups groups){
-//		return _winDetect( groups);
-//	}
 
 	/**
 	 * Decreta l'inizio del gioco. Il che significa che se il primo giocatore è 
