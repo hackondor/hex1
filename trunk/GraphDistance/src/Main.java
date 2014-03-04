@@ -36,7 +36,7 @@ public class Main {
 		Game g = new Game(3,3);
 		 JFrame gui = g.getGui();
 		 gui.setVisible(true);
-		 dh = new DistanceHeuristic("Distance H",2);
+		 dh = new DistanceHeuristic("Distance H",1);
 		 g.addPlayer(dh);
 		 g.addPlayer("Player 2");
 		
