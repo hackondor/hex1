@@ -37,8 +37,9 @@ public class Main {
 		 JFrame gui = g.getGui();
 		 gui.setVisible(true);
 		 mini = new MiniMaxDH("Distance H");
-		 g.addPlayer(mini);
 		 g.addPlayer("Player 2");
+		 g.addPlayer(mini);
+		 
 		// g.setOnGameFinish(new CommandExec<Void>(new MyAction<Void>()));
 	}
 	
@@ -46,12 +47,18 @@ public class Main {
 		 Main m = new Main();
 //		try {
 //			HexGraph g = new HexGraph(2, 2, HexGraph.PLAYER_HOR);
-//			//g.viewGraph("test0");
+//			
 //			g.placePiece(0, 0, HexGraph.CONNECT_PLAYER);
-//			//g.viewGraph("test1");
+//		//	g.viewGraph("MAX");
 //			
 //			g.placePiece(0, 1, HexGraph.CUT_PLAYER);
-//			g.viewGraph("test2");
+//		//	g.viewGraph("MIN");
+//	
+//			g.placePiece(1, 0, HexGraph.CONNECT_PLAYER);
+//			g.viewGraph("MAX");
+//
+//			g.placePiece(1, 1, HexGraph.CUT_PLAYER);
+//			g.viewGraph("MIN");
 //		} catch (Exception e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
