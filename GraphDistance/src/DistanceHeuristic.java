@@ -152,6 +152,7 @@ public class DistanceHeuristic extends AlgorithmsDefinition {
 		int distanceO = graphOpponent.getDistance();
 		
 		if(distanceM == 1){	//ho vinto
+			System.out.println("entro nella vittoria");//test
 			return HexGraph.INF;
 		}
 		else if(distanceO==1){
