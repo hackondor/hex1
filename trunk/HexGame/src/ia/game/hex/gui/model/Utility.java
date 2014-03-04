@@ -15,7 +15,7 @@ public class Utility {
 	public final static float YCENTER = 70; 						//coordinata y del centro del primo esagono
 	public final static int DEFAULT_SIDE = 25;
 	public final static int MARGIN = 2;
-	public final static float ANGLE = 0;//(float) -Math.PI/10;			//angolo di rotazione degli esagoni
+	public final static float ANGLE = (float) -Math.PI/10;			//angolo di rotazione degli esagoni
 	private static Font font = null;
 	public static int DEFAULT_GUI_WIDTH = 770;
 	public static int DEFAULT_GUI_HEIGHT = 700;
