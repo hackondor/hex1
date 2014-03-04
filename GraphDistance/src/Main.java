@@ -33,10 +33,10 @@ public class Main {
 	}
 	
 	public Main(){
-		Game g = new Game(3,3);
+		Game g = new Game(10,10);
 		 JFrame gui = g.getGui();
 		 gui.setVisible(true);
-		 dh = new DistanceHeuristic("Distance H",1);
+		 dh = new DistanceHeuristic("Distance H",4);
 		 g.addPlayer(dh);
 		 g.addPlayer("Player 2");
 		

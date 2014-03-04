@@ -14,7 +14,7 @@ public class DistanceHeuristic extends AlgorithmsDefinition {
 	private int columns = -1;
 	int profonditaLimite = 0;
 	int profondita = 0;
-	
+
 	public DistanceHeuristic(String name,int profondita) {
 		super(name);
 		profonditaLimite = profondita;
@@ -38,7 +38,7 @@ public class DistanceHeuristic extends AlgorithmsDefinition {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-			
+
 		}
 		if(getNumberOfPiece()!=0){
 			lastPlaced = getLastNodePlaced();
@@ -50,10 +50,11 @@ public class DistanceHeuristic extends AlgorithmsDefinition {
 		int maxUtility = -HexGraph.INF-1;
 		bestMove = new Node(0,0);
 		lastEmpty = new Node(-1,-1);
-		
+
 		boolean stop = false;
 		for(int i=0;i<rows && !stop;i++){
 			for(int j=0;j<columns && !stop;j++){
+
 				if(!graph.isBusy(i, j)){
 					lastEmpty = new Node(i,j);
 					graph.placePiece(i, j,HexGraph.CONNECT_PLAYER);
@@ -90,69 +91,72 @@ public class DistanceHeuristic extends AlgorithmsDefinition {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
-		
+
+
 	}
-	
+
 	private int valoreMax(){
 		profondita++;
-		int utilita;
-		if((utilita = TestTaglio())!=FAILTEST)
-			return utilita;
 		int v = -HexGraph.INF;
-		boolean stop = false;
-		for(int i=0;i<rows && !stop;i++){
-			for(int j=0;j<columns && !stop;j++){
-				if(!graph.isBusy(i, j)){
-					graph.placePiece(i, j, HexGraph.CONNECT_PLAYER);
-					graphOpponent.placePiece(i, j, HexGraph.CUT_PLAYER);
-					v = max(v,valoreMin());
-					graph.removePiece(i, j);
-					graphOpponent.removePiece(i, j);
-					//stop = true;
+		int utilita=0;
+		if((utilita = TestTaglio())!=FAILTEST)
+			v= utilita;
+		else{
+			boolean stop = false;
+			for(int i=0;i<rows && !stop;i++){
+				for(int j=0;j<columns && !stop;j++){
+					if(!graph.isBusy(i, j)){
+						graph.placePiece(i, j, HexGraph.CONNECT_PLAYER);
+						graphOpponent.placePiece(i, j, HexGraph.CUT_PLAYER);
+						v = max(v,valoreMin());
+						graph.removePiece(i, j);
+						graphOpponent.removePiece(i, j);
+						//stop = true;
+					}
 				}
 			}
 		}
-		
+
+		profondita--;
 		return v;
 	}
-	
+
 
 	private int valoreMin(){
 		profondita++;
 		int utilita;
-		if((utilita = TestTaglio())!=FAILTEST)
-			return utilita;
 		int v = HexGraph.INF;
-		boolean stop = false;
-		for(int i=0;i<rows && !stop;i++){
-			for(int j=0;j<columns && !stop;j++){
-				if(!graph.isBusy(i, j)){
-					graph.placePiece(i, j, HexGraph.CUT_PLAYER);
-					graphOpponent.placePiece(i, j, HexGraph.CONNECT_PLAYER);
-					v = min(v,valoreMax());
-					
-					graph.removePiece(i, j);
-					graphOpponent.removePiece(i, j);
-					
-					//stop = true;
+		if((utilita = TestTaglio())!=FAILTEST)
+			v= utilita;
+		else{
+			boolean stop = false;
+			for(int i=0;i<rows && !stop;i++){
+				for(int j=0;j<columns && !stop;j++){
+					if(!graph.isBusy(i, j)){
+						graph.placePiece(i, j, HexGraph.CUT_PLAYER);
+						graphOpponent.placePiece(i, j, HexGraph.CONNECT_PLAYER);
+						v = min(v,valoreMax());
+
+						graph.removePiece(i, j);
+						graphOpponent.removePiece(i, j);
+
+						//stop = true;
+					}
+
 				}
-				
 			}
-			
 		}
-		
+		profondita--;
 		return v;
 	}
-	
+
 
 	private int TestTaglio(){
-		
+
 		int distanceM = graph.getDistance();
 		int distanceO = graphOpponent.getDistance();
-		
+
 		if(distanceM == 1){	//ho vinto
-			System.out.println("entro nella vittoria");//test
 			return HexGraph.INF;
 		}
 		else if(distanceO==1){
@@ -174,7 +178,7 @@ public class DistanceHeuristic extends AlgorithmsDefinition {
 			return x;
 		else return y;
 	}
-	
+
 	public void printGraph(){
 		graph.viewGraph("");
 	}
