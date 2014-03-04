@@ -100,8 +100,7 @@ public class MiniMaxDH extends AlgorithmsDefinition {
 	}
 	
 	private int valoreMax(){
-		System.out.println("valore Max");
-		//graph.viewGraph("MAX");
+		
 		int utilita;
 		if((utilita = TestTerminazione())!=-1)
 			return utilita;
@@ -123,11 +122,9 @@ public class MiniMaxDH extends AlgorithmsDefinition {
 		return v;
 	}
 	
+
 	private int valoreMin(){
-		System.out.println("valore Min");
-		//graph.viewGraph("MIN");
-		//graphOpponent.viewGraph();
-		
+
 		int utilita;
 		if((utilita = TestTerminazione())!=-1)
 			return utilita;
@@ -157,11 +154,9 @@ public class MiniMaxDH extends AlgorithmsDefinition {
 	
 	private int TestTerminazione(){
 		if(graph.getDistance() == 1){	//ho vinto
-			
 			return 1;
 		}
 		else if(graphOpponent.getDistance()==1){
-			//graphOpponent.viewGraph();
 			return 0;
 		}
 		else 

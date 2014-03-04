@@ -118,8 +118,11 @@ public class HexGraph {
 				}
 				
 				//rimozione del nodo dal grafo. Questo cancellerà anche tutti gli archi tra il nodo e gli adiacenti
-				if(!g.removeVertex(n))
-					System.out.println("not remove");
+				for(Node n1:adjacents){
+					g.removeEdge(g.findEdge(n, n1));
+				}
+				g.removeVertex(n);
+				
 
 				return true;
 			}
@@ -179,6 +182,9 @@ public class HexGraph {
 			@Override
 			public boolean run(Node n) {
 				adjacents = g.getNeighbors(n);
+				for(Node n1:adjacents){
+					g.removeEdge(g.findEdge(n, n1));
+				}
 				g.removeVertex(n);
 				return true;
 			}
@@ -325,7 +331,7 @@ public class HexGraph {
 			return nodes[i][j].getPlayer() != EMPTY_CELL;
 		}
 		
-		public void viewGraph(String name){
+		public  void  viewGraph(String name){
 			// The Layout<V, E> is parameterized by the vertex and edge types
 			Layout<Node, Integer> layout = new CircleLayout(g);
 			layout.setSize(new Dimension(600,600)); // sets the initial size of the space
@@ -344,7 +350,7 @@ public class HexGraph {
 			frame.pack();
 			frame.setVisible(true); 
 			
-			//System.out.println(g);
+			System.out.println(g);
 		}
 	
 		
