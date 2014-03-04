@@ -20,13 +20,13 @@ import library.pattern.command.CommandExec;
 
 public class Main {
 
-	private MiniMaxDH mini;
+	private DistanceHeuristic dh;
 	
 	public class MyAction<T> implements Action<T>{
 		
 		@Override
 		public boolean run(T p) {
-			mini.printGraph();
+			dh.printGraph();
 			return true;
 		}
 		
@@ -36,9 +36,10 @@ public class Main {
 		Game g = new Game(3,3);
 		 JFrame gui = g.getGui();
 		 gui.setVisible(true);
-		 mini = new MiniMaxDH("Distance H");
+		 dh = new DistanceHeuristic("Distance H",2);
+		 g.addPlayer(dh);
 		 g.addPlayer("Player 2");
-		 g.addPlayer(mini);
+		
 		 
 		// g.setOnGameFinish(new CommandExec<Void>(new MyAction<Void>()));
 	}
