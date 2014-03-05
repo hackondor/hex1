@@ -110,10 +110,13 @@ public class HexGuiVm implements Observer {
 		}
 	}
 
-	public Point2D pointRotation(Point2D p){
-		double x = p.getX()*Math.cos(Utility.ANGLE) - p.getY()*Math.sin(Utility.ANGLE);
-		double y = p.getX()*Math.sin(Utility.ANGLE) + p.getY()*Math.cos(Utility.ANGLE);
+	public Point2D pointRotation(Point2D p,float angle){
+		double x = p.getX()*Math.cos(angle) - p.getY()*Math.sin(angle);
+		double y = p.getX()*Math.sin(angle) + p.getY()*Math.cos(angle);
 		return new Point2D.Double(x,y);
+	} 
+	public Point2D pointRotation(Point2D p){
+		return pointRotation(p,Utility.ANGLE);
 	} 
 
 	/**
