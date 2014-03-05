@@ -264,39 +264,152 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 
 	}
 
+
+	private Point2D intersect(Retta r1, Retta r2){
+		double x=(r2.getN()-r1.getN())/(r1.getM()-r2.getM());
+		Point2D p=new Point2D.Double(x,r1.y(x));
+		return p;
+	}
+	private class Retta{
+		double m,n;
+		public double getM() {
+			return m;
+		}
+		public void setM(double m) {
+			this.m = m;
+		}
+		public double getN() {
+			return n;
+		}
+		public void setN(double n) {
+			this.n = n;
+		}
+		public Retta(double m, double n) {
+			super();
+			this.m = m;
+			this.n = n;
+		}
+		public Retta(double x1, double x2, double y1, double y2) {
+			super();
+			m=(y2-y1)/(x2-x1);
+			n = y1-x1*m;
+		}
+		public double y(double x){
+			return x*m+n;
+		}
+	
+		
+	}
 	//draw the lines that sorround the board
 	private void _drawLines(Graphics2D g){
-		double x1 = Utility.XCENTER - 30;
-		double y1 = Utility.YCENTER - 50;
+		double a = 5;
+		int dy=0;
+		int l = Utility.DEFAULT_SIDE;
+		int r=vm.getNumbersOfRows()-1;
+		int c=vm.getNumbersOfColumn()-1;
+		double sin60=Math.sqrt(3)/2;
+		double cos60=0.5;
+		double y_1 = polygons[0][0].GetVertices()[1].getY()-a;
+		double x_1 = polygons[0][0].GetVertices()[1].getX();
+		double y_2 = polygons[0][c].GetVertices()[1].getY()-a;
+		double x_2 = polygons[0][c].GetVertices()[1].getX();
+		Retta retta1 = new Retta(x_1,x_2,y_1,y_2);
+		
+		y_1 = polygons[0][0].GetVertices()[5].getY();
+		x_1 = polygons[0][0].GetVertices()[5].getX()-a;
+		y_2 = polygons[r][0].GetVertices()[5].getY();
+		x_2 = polygons[r][0].GetVertices()[5].getX()-a;
+		Retta retta2= new Retta(x_1,x_2,y_1,y_2);
+		
+		double x1=intersect(retta1, retta2).getX();
+		double y1=intersect(retta1, retta2).getY();
+		
+		y_1 = polygons[r][0].GetVertices()[4].getY()+a;
+		x_1 = polygons[r][0].GetVertices()[4].getX();
+		y_2 = polygons[r][c].GetVertices()[4].getY()+a;
+		x_2 = polygons[r][c].GetVertices()[4].getX();
+		Retta retta3= new Retta(x_1,x_2,y_1,y_2);
+		
 
-		double y2 = vm.getNumbersOfRows()*Utility.DEFAULT_SIDE*2+Utility.MARGIN*2;
-		double x2 = x1;
-
-		double x3 = (vm.getNumbersOfColumn()-1)*Utility.DEFAULT_SIDE*2+Utility.MARGIN*2;
-		double y3 = y2 + 9*Utility.DEFAULT_SIDE;
-
-		double x4 = x3;
-		double y4 = 9*Utility.DEFAULT_SIDE;
-
+		
+		y_1 = polygons[0][c].GetVertices()[2].getY();
+		x_1 = polygons[0][c].GetVertices()[2].getX()+a;
+		y_2 = polygons[r][c].GetVertices()[2].getY();
+		x_2 = polygons[r][c].GetVertices()[2].getX()+a;
+		Retta retta4= new Retta(x_1,x_2,y_1,y_2);
+		
+		double x2=intersect(retta2, retta3).getX();
+		double y2=intersect(retta2, retta3).getY();
+		
+		double x3=intersect(retta3, retta4).getX();
+		double y3=intersect(retta3, retta4).getY();
+		
+		
+		double x4=intersect(retta1, retta4).getX();
+		double y4=intersect(retta1, retta4).getY();
+		
+		
 		Color[] colors = Costant.PLAYER_COLOR;
-		Point2D p1 = vm.pointRotation(new Point2D.Double(x1,y1));
-		Point2D p2 = vm.pointRotation(new Point2D.Double(x2,y2));
-		Point2D p3 = vm.pointRotation(new Point2D.Double(x3,y3));
-		Point2D p4 = vm.pointRotation(new Point2D.Double(x4,y4));
+		
+		Point2D p1 = new Point2D.Double(x1,y1);
+		Point2D p2 = (new Point2D.Double(x2,y2));
+		Point2D p3 = (new Point2D.Double(x3,y3));
+		Point2D p4 = (new Point2D.Double(x4,y4));
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setColor(colors[0]);
-
-		g.setStroke(new BasicStroke(5.0f,                     // Line width
-				BasicStroke.CAP_ROUND,    					  // End-cap style
+		
+		
+		g.setStroke(new BasicStroke(2.0f,                     // Line width
+				BasicStroke.CAP_BUTT,    					  // End-cap style
 				BasicStroke.JOIN_ROUND)); 					  // Vertex join style
-		g.draw(new Line2D.Double(p1,p2));
+		
+//		Line2D.Double l1 = new Line2D.Double(p1,p2);
+//		Line2D.Double l2 = new Line2D.Double(p2,p3);
+//		Line2D.Double l3 = new Line2D.Double(p4,p3);
+//		Line2D.Double l4 = new Line2D.Double(p4,p1);
+//		g.draw(l1);
+//		g.setColor(colors[1]);
+//		g.draw(l2);
+//		g.setColor(colors[0]);
+//		g.draw(l3);
+		
+//		g.draw(l4);
+		GeneralPath pat = new GeneralPath();
+		pat.moveTo(p1.getX(), p1.getY());
+		pat.lineTo(p2.getX(), p2.getY());
+		pat.lineTo(polygons[r][0].GetCenter().getX(),polygons[r][0].GetCenter().getY());
+		pat.lineTo(polygons[0][0].GetCenter().getX(),polygons[0][0].GetCenter().getY());
+		pat.lineTo(p1.getX(), p1.getY());
+		pat.closePath();
+		g.fill(pat);
 		g.setColor(colors[1]);
-		g.draw(new Line2D.Double(p2,p3));
+		pat = new GeneralPath();
+		pat.moveTo(p1.getX(), p1.getY());
+		pat.lineTo(p4.getX(), p4.getY());
+		pat.lineTo(polygons[0][c].GetCenter().getX(),polygons[0][c].GetCenter().getY());
+		pat.lineTo(polygons[0][0].GetCenter().getX(),polygons[0][0].GetCenter().getY());
+		pat.lineTo(p1.getX(), p1.getY());
+		pat.closePath();
+		g.fill(pat);
+		
+		pat = new GeneralPath();
+		pat.moveTo(p3.getX(), p3.getY());
+		pat.lineTo(p2.getX(), p2.getY());
+		pat.lineTo(polygons[r][0].GetCenter().getX(),polygons[r][0].GetCenter().getY());
+		pat.lineTo(polygons[r][c].GetCenter().getX(),polygons[r][c].GetCenter().getY());
+		pat.lineTo(p1.getX(), p1.getY());
+		pat.closePath();
+		g.fill(pat);
+		
 		g.setColor(colors[0]);
-		g.draw(new Line2D.Double(p3,p4));
-		g.setColor(colors[1]);
-		g.draw(new Line2D.Double(p4,p1));
-
+		pat = new GeneralPath();
+		pat.moveTo(p3.getX(), p3.getY());
+		pat.lineTo(p4.getX(), p4.getY());
+		pat.lineTo(polygons[0][c].GetCenter().getX(),polygons[0][c].GetCenter().getY());
+		pat.lineTo(polygons[r][c].GetCenter().getX(),polygons[r][c].GetCenter().getY());
+		pat.lineTo(p1.getX(), p1.getY());
+		pat.closePath();
+		g.fill(pat);
 	}
 
 	private void _drawPlayersName(Graphics2D g){
@@ -336,14 +449,19 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 		public void paint(Graphics g){
 			Graphics gb = buffer.getGraphics();
 			Graphics2D gb2 = (Graphics2D)gb;
+
+			_drawLines(gb2);
+			
 			gb2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
 			for(Cell[] prow:polygons)
 				for(Cell c:prow){
 					gb2.setColor(c.getColor());
 					gb2.fill(c.getShape());
+					gb2.setColor(Color.black);
+					gb2.draw(c.getShape());
 				}
-			_drawLines(gb2);
+			
 			if(isWin)
 				_drawPlayerWinString(gb2);
 			_drawPlayersName(gb2);
