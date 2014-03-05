@@ -65,7 +65,7 @@ public class DirectedHexGraph implements HexGraph {
 						if(!source_adjacents.contains(node1)){
 							Edge e = new Edge(k++,MAXFLOW);
 							g.addEdge(e, s,node1);
-							pairs_added_edge.add(e);
+							pairs_added_edge.add(new Pair<Node>(s,node1));
 						}
 					}
 				}
@@ -81,13 +81,13 @@ public class DirectedHexGraph implements HexGraph {
 									if(!g.isNeighbor(node2, node1)){
 										Edge e1 = new Edge(k++,1);
 										g.addEdge(e1, node2, node1);
-										pairs_added_edge.add(e1);
+										pairs_added_edge.add(new Pair<Node>(node2,node1));
 									}
-									pairs_added_edge.add(e);
+									pairs_added_edge.add(new Pair<Node>(node1,node2));
 								}else{
 									Edge e = new Edge(k++,MAXFLOW);
 									g.addEdge(e,node1, node2);
-									pairs_added_edge.add(e);
+									pairs_added_edge.add(new Pair<Node>(node1,node2));
 								}
 							}
 					}
@@ -109,8 +109,8 @@ public class DirectedHexGraph implements HexGraph {
 			public boolean run(Node n) {
 
 				//rimozione di tutti gli archi inseriti dalla Reduce
-				for(Edge p:pairs_added_edge){
-					g.removeEdge(p);
+				for(Pair<Node> p:pairs_added_edge){
+					g.removeEdge(g.findEdge(p.getFirst(), p.getSecond()));
 				}
 
 				//aggiunta del vertice rimosso
@@ -334,6 +334,7 @@ public class DirectedHexGraph implements HexGraph {
 		EdmondsKarpMaxFlow<Node, Edge> ek = new EdmondsKarpMaxFlow(g, s, t, edge_capacities, edgeFlowMap, 
 				edgeFactory);
 		ek.evaluate(); // This instructs the class to compute the max flow
+		
 		return ek.getMaxFlow();
 	}
 

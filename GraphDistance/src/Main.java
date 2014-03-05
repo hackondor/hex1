@@ -111,8 +111,8 @@ public class Main {
 	
 	public static void main(String[] args) {
 		 Main m = new Main();
-		m.test();
-		//m.test_game();
+		//m.test();
+		m.test_game();
 
 		 
 		
