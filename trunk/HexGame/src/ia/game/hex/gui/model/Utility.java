@@ -24,7 +24,7 @@ public class Utility {
 	
 	public static void createFont(){
 		try {
-			_createFont();
+			//_createFont();
 		} catch (Exception e) {
 			//do nothing
 		}
@@ -42,11 +42,12 @@ public class Utility {
 
 	public static Font getFont(int fontSize){
 		try {
-			_createFont();
-			font = font.deriveFont(Font.PLAIN,fontSize);
+			//_createFont();
+			//font = font.deriveFont(Font.PLAIN,fontSize);
+			font = new Font("Serif",Font.PLAIN,fontSize);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			font = new Font("Serif",Font.PLAIN,fontSize);
+			//font = new Font("Serif",Font.PLAIN,fontSize);
 		}
 			
 		return font;
