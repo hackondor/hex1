@@ -61,40 +61,46 @@ public class Main {
 	}
 	
 	void test_game(){
-		Game g = new Game(2,2);
+		Game g = new Game(8,8);
 		 JFrame gui = g.getGui();
 		 gui.setVisible(true);
 		 //dh = new DistanceHeuristicAlphaBeta("Distance H",20);
-		 fh = new FlowHeuristicAlphaBeta("Flow H",20);
+		 fh = new FlowHeuristicAlphaBeta("Flow H",3);
 		 g.addPlayer(fh);
-		 g.addPlayer("Player 2");
+		 g.addPlayer("Pino");
+
 	}
 	
 	public void test(){
-		
+		boolean diverso=false;
 		int maxFlow = 0;
 		try {
-			for(int i =0;i<10000;i++){
+			for(int i =0;i<1000;i++){
 			DirectedHexGraph g = new DirectedHexGraph(10, 10, 0);
 			g.placePiece(0, 0, HexGraph.CONNECT_PLAYER);
-			g.placePiece(0, 5, HexGraph.CUT_PLAYER);			
-			g.placePiece(1, 0, HexGraph.CONNECT_PLAYER);			
+			g.placePiece(0, 5, HexGraph.CUT_PLAYER);
+			g.placePiece(0,9, HexGraph.CONNECT_PLAYER);
+			g.placePiece(8, 4, HexGraph.CONNECT_PLAYER);				
 			g.placePiece(3, 8, HexGraph.CUT_PLAYER);
 			g.removePiece(3, 8);
-			g.removePiece(1, 0);
-			g.placePiece(2, 2, HexGraph.CONNECT_PLAYER);
-			g.placePiece(4, 3, HexGraph.CONNECT_PLAYER);
+			g.removePiece(8, 4);
+			g.placePiece(2, 2, HexGraph.CUT_PLAYER);
+			g.placePiece(1, 1, HexGraph.CONNECT_PLAYER);
 			g.placePiece(9, 9, HexGraph.CONNECT_PLAYER);
 			g.removePiece(9, 9);
 			g.placePiece(8, 9, HexGraph.CUT_PLAYER);
-			g.placePiece(1, 1, HexGraph.CONNECT_PLAYER);
-			//g.viewGraph("test");
+			g.placePiece(5,3, HexGraph.CONNECT_PLAYER);
+	//		g.viewGraph("test "+i);
 			
+		
 			if(g.getMaxFlow()!=maxFlow && i!=0){
 				maxFlow = g.getMaxFlow();
 				System.out.println("Errore "+ i+":"+maxFlow);
 			}else{
+				
 				maxFlow = g.getMaxFlow();
+				System.out.println("ok "+ i+":"+maxFlow);
+
 			}
 			}
 		} catch (Exception e) {
@@ -107,8 +113,8 @@ public class Main {
 	
 	public static void main(String[] args) {
 		 Main m = new Main();
-		m.test();
-		//m.test_game();
+		//m.test();
+		m.test_game();
 
 		 
 		

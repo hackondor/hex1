@@ -56,6 +56,7 @@ public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 		lastEmpty = new Node(-1,-1);
 
 		boolean stop = false;
+		long totalTime=System.currentTimeMillis();
 		for(int i=0;i<rows && !stop;i++){
 			for(int j=0;j<columns && !stop;j++){
 
@@ -63,21 +64,26 @@ public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 					lastEmpty = new Node(i,j);
 					graph.placePiece(i, j,DirectedHexGraph.CONNECT_PLAYER);
 					graphOpponent.placePiece(i, j,DirectedHexGraph.CUT_PLAYER);
+					long time1 = System.currentTimeMillis();
 					int x = valoreMin(-DirectedHexGraph.INF,DirectedHexGraph.INF);
-					System.out.println("utility:"+x);//test
+					long time2 = System.currentTimeMillis();
+					long time=(time2-time1);
+					System.out.println("Ramo: "+(i*getRowsNumber()+j)+" tempo: "+time);//test
 					if(maxUtility < x){
 						maxUtility = x;
 						bestMove.setX(i);bestMove.setY(j);
 					}	
-					if(maxUtility==DirectedHexGraph.INF){				//mi fermo alla prima mossa utile
+					if(maxUtility==DirectedHexGraph.INF){				//mi fermo perchè ho vinto
 						stop = true;
-						System.out.println("mi fermo alla prima mossa utile");
+						System.out.println("mi fermo perchè ho vinto");
 					}
 					graph.removePiece(i, j);
 					graphOpponent.removePiece(i, j);
 				}
 			}
 		}
+		totalTime=(System.currentTimeMillis()-totalTime);
+		System.out.println("Tempo totale impiegato: "+totalTime);
 		try {
 			if(!isBusy(bestMove.getX(),bestMove.getY())){
 				System.out.println("best move:"+bestMove.getX()+" "+bestMove.getY());
@@ -116,10 +122,10 @@ public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 
 						graph.removePiece(i, j);
 						graphOpponent.removePiece(i, j);
-//						if(v>=beta){
-//							profondita--;
-//							return v;
-//						}
+						if(v>=beta){
+							profondita--;
+							return v;
+						}
 						alpha = max(v,alpha);
 					
 						//stop = true;
@@ -150,10 +156,10 @@ public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 
 						graph.removePiece(i, j);
 						graphOpponent.removePiece(i, j);
-//						if(v<=alpha){
-//							profondita--;
-//							return v;
-//						}
+						if(v<=alpha){
+							profondita--;
+							return v;
+						}
 						beta = min(v,beta);
 						
 						
@@ -174,14 +180,11 @@ public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 		int flowM = graph.getMaxFlow();
 		int flowO = graphOpponent.getMaxFlow();
 		
-		System.out.println("flusso:"+flowM);
 
 		if(flowO == 0){	//ho vinto
-			System.out.println("ho vinto");
 			return DirectedHexGraph.INF;
 		}
 		else if(flowM==0){
-			System.out.println("ho perso");
 			return -DirectedHexGraph.INF;
 		}
 		else if(profondita == profonditaLimite)
