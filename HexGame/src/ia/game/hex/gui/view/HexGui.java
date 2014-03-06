@@ -11,6 +11,7 @@ import ia.game.hex.gui.model.Utility;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.FontMetrics;
@@ -83,15 +84,18 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//
 
 		players = vm.getPlayersInfo();
 		Utility.createFont();
-		setSize(Utility.DEFAULT_GUI_WIDTH,Utility.DEFAULT_GUI_HEIGHT);
+		Dimension preferredSize = new Dimension(Utility.DEFAULT_GUI_WIDTH,Utility.DEFAULT_GUI_HEIGHT);
+		setSize(preferredSize);
+		//Centra la finestra nello schermo
+		 setLocationRelativeTo(null);
+
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainpanel = new HexPanel();
-		mainpanel.setSize(this.getSize());
+		mainpanel.setSize(preferredSize);
 		mainpanel.addMouseListener(new ClickListener());
 		mainpanel.setBackground(Color.RED);
 		add(mainpanel);
@@ -418,7 +422,7 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setColor(Color.WHITE);
-			g.fillRect(0, Utility.DEFAULT_GUI_HEIGHT-105, Utility.DEFAULT_GUI_WIDTH, 110);
+			g.fillRect(0, Utility.PLAYER_NAME_RECT_HEIGHT, Utility.DEFAULT_GUI_WIDTH, 110);
 			g.setColor(Color.GREEN);
 			g.fillRect(0, Utility.DEFAULT_GUI_HEIGHT-100, Utility.DEFAULT_GUI_WIDTH, 45);
 
@@ -440,7 +444,7 @@ public class HexGui extends JFrame implements Observer,GameListener  {
 			FontMetrics fm = getFontMetrics( font);
 			int width = fm.stringWidth(players.get(1).getName());
 			g.drawString(players.get(1).getName(), Utility.DEFAULT_GUI_WIDTH-width-15 ,Utility.DEFAULT_GUI_HEIGHT-60);
-			
+			    
 		}
 	}
 

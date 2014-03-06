@@ -65,7 +65,6 @@ public class HexGuiVm implements Observer {
 		for(i=0;i<board.GetRowsNumber();i++){
 			for(j=0;j<board.GetColumnsNumber();j++) {
 				c = new Cell();
-				shape = new GeneralPath(GeneralPath.WIND_EVEN_ODD, 6);
 				c.SetCenter(new Point2D.Double(xc,yc));
 				points = new Point2D[6];
 				points[0] = new Point2D.Double(xc-side/2,yc-apotema); 
@@ -76,14 +75,6 @@ public class HexGuiVm implements Observer {
 				points[5] = new Point2D.Double(xc-side,yc); 
 				c.SetVertices(points);
 				_hexagonRotation(c);
-
-				//creazione della shape
-				shape.moveTo(points[0].getX(), points[0].getY());
-				for (int m = 1; m < 6; m++)
-					shape.lineTo(points[m].getX(), points[m].getY());
-				shape.closePath();
-				c.setShape(shape);
-
 				cells[j][i] = c;
 
 				yc = (float) (yc +2*apotema + Utility.MARGIN);
@@ -91,6 +82,43 @@ public class HexGuiVm implements Observer {
 			xc = (float) (xc + 1.5*side + Utility.MARGIN);
 			yc = (float)(Utility.YCENTER + (i+1)*apotema + Utility.MARGIN);
 		}
+		
+		/*
+		 * Spostiamo i vertici degli esagoni in modo da eguagliare le distanze
+		 * dai bordi. La scacchiera viene centrata nel frame.
+		 */
+		Point2D a =cells[0][0].GetCenter();
+		Point2D b=cells[getNumbersOfRows()-1][getNumbersOfColumn()-1].GetCenter();
+		int l_x=Utility.DEFAULT_GUI_WIDTH;
+		int l_y=Utility.PLAYER_NAME_RECT_HEIGHT;
+		double dx=l_x-b.getX()-a.getX();
+		dx=dx/2;
+		double dy=l_y-b.getY()-a.getY();
+		dy=dy/2;
+				
+		for(i=0;i<board.GetRowsNumber();i++){
+			for(j=0;j<board.GetColumnsNumber();j++) {
+				Point2D[] vertices = new Point2D.Double[6];
+				for(int k =0; k<6;k++){
+					double x =cells[i][j].GetVertices()[k].getX();
+					double y =cells[i][j].GetVertices()[k].getY();
+
+					vertices[k]=new Point2D.Double(x+dx,y+dy);
+
+				}
+				
+				cells[i][j].SetVertices(vertices);
+				Point2D cent = cells[i][j].GetCenter();
+				cells[i][j].SetCenter(new Point2D.Double(cent.getX()+dx,cent.getY()+dy));
+				shape = new GeneralPath(GeneralPath.WIND_EVEN_ODD, 6);
+				shape.moveTo(vertices[0].getX(), vertices[0].getY());
+				for (int m = 1; m < 6; m++)
+					shape.lineTo(vertices[m].getX(), vertices[m].getY());
+				shape.closePath();
+				cells[i][j].setShape(shape);
+			}
+		}
+		
 	}
 
 

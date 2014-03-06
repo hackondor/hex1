@@ -21,6 +21,7 @@ public class Utility {
 	public static int DEFAULT_GUI_HEIGHT = 700;
 	public static int PLAYER_HOR=0;
 	public static int PLAYER_VERT=1;
+	public static int PLAYER_NAME_RECT_HEIGHT=DEFAULT_GUI_HEIGHT-105;
 	
 	public static void createFont(){
 		try {
