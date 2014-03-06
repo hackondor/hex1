@@ -92,7 +92,9 @@ public class Main {
 			
 			if(g.getMaxFlow()!=maxFlow && i!=0){
 				maxFlow = g.getMaxFlow();
-				System.out.println("Errore"+ i+":"+maxFlow);
+				System.out.println("Errore "+ i+":"+maxFlow);
+			}else{
+				maxFlow = g.getMaxFlow();
 			}
 			}
 		} catch (Exception e) {
