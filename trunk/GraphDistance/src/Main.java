@@ -61,13 +61,14 @@ public class Main {
 	}
 	
 	void test_game(){
-		Game g = new Game(8,8);
+		Game g = new Game(6,6);
 		 JFrame gui = g.getGui();
 		 gui.setVisible(true);
-		 //dh = new DistanceHeuristicAlphaBeta("Distance H",20);
-		 fh = new FlowHeuristicAlphaBeta("Flow H",3);
+		 dh = new DistanceHeuristicAlphaBeta("Distance H",5);
+		 fh = new FlowHeuristicAlphaBeta("Flow H",4);
+		 g.addPlayer(dh);
 		 g.addPlayer(fh);
-		 g.addPlayer("Pino");
+		 
 
 	}
 	
@@ -108,6 +109,11 @@ public class Main {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void testScroll(){
+		ScrollAction scroll = new ScrollActionByRow(3, 3);
+
 	}
 	
 	

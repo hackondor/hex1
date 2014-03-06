@@ -14,7 +14,7 @@ public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 	private int columns = -1;
 	private int profonditaLimite = 0;
 	private int profondita = 0;
-	private boolean isHorPlayer = false;
+	private ScrollAction scroll = null;
 
 
 
@@ -25,6 +25,7 @@ public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 
 	@Override
 	public void run() {
+		
 		Node bestMove;
 		Node lastEmpty;
 		if(graph == null){
@@ -34,11 +35,13 @@ public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 				if(getPlayer()==0){
 					graph = new DirectedHexGraph(rows,columns,DirectedHexGraph.PLAYER_HOR);
 					graphOpponent = new DirectedHexGraph(rows,columns,DirectedHexGraph.PLAYER_VERT);
-					isHorPlayer = true;
-					
+					scroll = new ScrollActionByColumn(rows, columns);
+
+
 				}else{
 					graph = new DirectedHexGraph(rows,columns,DirectedHexGraph.PLAYER_VERT);
 					graphOpponent = new DirectedHexGraph(rows,columns,DirectedHexGraph.PLAYER_HOR);
+					scroll = new ScrollActionByRow(rows, columns);
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -46,7 +49,7 @@ public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 
 		}
 
-
+		scroll.reset();//reinizializza la classe che itera sulle azioni disponibili
 		if(getNumberOfPiece()!=0){
 			lastPlaced = getLastNodePlaced();
 			System.out.println("last:"+lastPlaced.getX()+" "+lastPlaced.getY());//test
@@ -57,166 +60,168 @@ public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 		int maxUtility = -DirectedHexGraph.INF-1;
 		bestMove = new Node(0,0);
 		lastEmpty = new Node(-1,-1);
-		
-			
+
+
 
 		boolean stop = false;
 		long totalTime=System.currentTimeMillis();
-		for(int i=0;i<columns && !stop;i++){
-			for(int j=0;j<rows && !stop;j++){
-				if(isHorPlayer)
-				if(i!=0 && i!=getRowsNumber()-1){
-					if(!graph.isBusy(i, j)){
-						lastEmpty = new Node(i,j);
-						graph.placePiece(i, j,DirectedHexGraph.CONNECT_PLAYER);
-						graphOpponent.placePiece(i, j,DirectedHexGraph.CUT_PLAYER);
-						long time1 = System.currentTimeMillis();
-						int x = valoreMin(-DirectedHexGraph.INF,DirectedHexGraph.INF);
-						long time2 = System.currentTimeMillis();
-						long time=(time2-time1);
-						System.out.println("Ramo: "+(i*getRowsNumber()+j)+" tempo: "+time);//test
-						if(maxUtility < x){
-							maxUtility = x;
-							bestMove.setX(i);bestMove.setY(j);
-						}	
-						if(maxUtility==DirectedHexGraph.INF){				//mi fermo perchè ho vinto
-							stop = true;
-							System.out.println("mi fermo perchè ho vinto");
-						}
-						graph.removePiece(i, j);
-						graphOpponent.removePiece(i, j);
+
+		int i=0,j=0;
+		while(!scroll.isEndCycle() && !stop){
+			i = scroll.getFirstIndex();
+			j = scroll.getSecondIndex();
+			if( !((i==0 || i==rows-1) && getNumberOfPiece()==0)){
+				if(!graph.isBusy(i, j)){
+					lastEmpty = new Node(i,j);
+					graph.placePiece(i, j,DirectedHexGraph.CONNECT_PLAYER);
+					graphOpponent.placePiece(i, j,DirectedHexGraph.CUT_PLAYER);
+					long time1 = System.currentTimeMillis();
+					int x = valoreMin(-DirectedHexGraph.INF,DirectedHexGraph.INF);
+					long time2 = System.currentTimeMillis();
+					long time=(time2-time1);
+					System.out.println("Ramo: "+(i*getRowsNumber()+j)+" tempo: "+time);//test
+					if(maxUtility < x){
+						maxUtility = x;
+						bestMove.setX(i);bestMove.setY(j);
+					}	
+					if(maxUtility==DirectedHexGraph.INF){				//mi fermo perchè ho vinto
+						stop = true;
+						System.out.println("mi fermo perchè ho vinto");
 					}
+					graph.removePiece(i, j);
+					graphOpponent.removePiece(i, j);
 				}
 			}
-		}
-		totalTime=(System.currentTimeMillis()-totalTime);
-		System.out.println("Tempo totale impiegato: "+totalTime);
-		try {
-			if(!isBusy(bestMove.getX(),bestMove.getY())){
-				System.out.println("best move:"+bestMove.getX()+" "+bestMove.getY());
-				placePiece(bestMove.getX(),bestMove.getY());
-				graph.placePiece(bestMove.getX(),bestMove.getY(), DirectedHexGraph.CONNECT_PLAYER);
-				graphOpponent.placePiece(bestMove.getX(),bestMove.getY(), DirectedHexGraph.CUT_PLAYER);
-			}
-			else{
-				System.out.println("best move in a busy cell");//test
-				placePiece(lastEmpty.getX(),lastEmpty.getY());
-				graph.placePiece(lastEmpty.getX(),lastEmpty.getY(), DirectedHexGraph.CONNECT_PLAYER);
-				graphOpponent.placePiece(lastEmpty.getX(),lastEmpty.getY(), DirectedHexGraph.CUT_PLAYER);
-			}
-		} catch (InvalidPlacementException | MultipleActionExeption e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			scroll.increment();
 		}
 
-
-	}
 	
-	
-	private void miniMax(int i,int y){
-		
+
+	totalTime=(System.currentTimeMillis()-totalTime);
+	System.out.println("Tempo totale impiegato: "+totalTime);
+	try {
+		if(!isBusy(bestMove.getX(),bestMove.getY())){
+			System.out.println("best move:"+bestMove.getX()+" "+bestMove.getY());
+			placePiece(bestMove.getX(),bestMove.getY());
+			graph.placePiece(bestMove.getX(),bestMove.getY(), DirectedHexGraph.CONNECT_PLAYER);
+			graphOpponent.placePiece(bestMove.getX(),bestMove.getY(), DirectedHexGraph.CUT_PLAYER);
+		}
+		else{
+			System.out.println("best move in a busy cell");//test
+			placePiece(lastEmpty.getX(),lastEmpty.getY());
+			graph.placePiece(lastEmpty.getX(),lastEmpty.getY(), DirectedHexGraph.CONNECT_PLAYER);
+			graphOpponent.placePiece(lastEmpty.getX(),lastEmpty.getY(), DirectedHexGraph.CUT_PLAYER);
+		}
+	} catch (InvalidPlacementException | MultipleActionExeption e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
 
-	private int valoreMax(int alpha,int beta){
-		profondita++;
-		int v = -DirectedHexGraph.INF;
-		int utilita=0;
-		if((utilita = TestTaglio())!=FAILTEST)
-			v= utilita;
-		else{
-			boolean stop = false;
-			for(int i=0;i<rows && !stop;i++){
-				for(int j=0;j<columns && !stop;j++){
-					if(!graph.isBusy(i, j)){
-						graph.placePiece(i, j, DirectedHexGraph.CONNECT_PLAYER);
-						graphOpponent.placePiece(i, j, DirectedHexGraph.CUT_PLAYER);
-						v = max(v,valoreMin(alpha,beta));
 
-						graph.removePiece(i, j);
-						graphOpponent.removePiece(i, j);
-						if(v>=beta){
-							profondita--;
-							return v;
-						}
-						alpha = max(v,alpha);
+}
 
-						//stop = true;
+
+private int valoreMax(int alpha,int beta){
+	profondita++;
+	int v = -DirectedHexGraph.INF;
+	int utilita=0;
+	if((utilita = TestTaglio())!=FAILTEST)
+		v= utilita;
+	else{
+		boolean stop = false;
+		for(int i=0;i<rows && !stop;i++){
+			for(int j=0;j<columns && !stop;j++){
+				if(!graph.isBusy(i, j)){
+					graph.placePiece(i, j, DirectedHexGraph.CONNECT_PLAYER);
+					graphOpponent.placePiece(i, j, DirectedHexGraph.CUT_PLAYER);
+					v = max(v,valoreMin(alpha,beta));
+
+					graph.removePiece(i, j);
+					graphOpponent.removePiece(i, j);
+					if(v>=beta){
+						profondita--;
+						return v;
 					}
+					alpha = max(v,alpha);
+
+					//stop = true;
 				}
 			}
 		}
-
-		profondita--;
-		return v;
 	}
 
-
-	private int valoreMin(int alpha,int beta){
-		profondita++;
-		int utilita = 0;
-		int v = DirectedHexGraph.INF;
-		if((utilita = TestTaglio())!=FAILTEST)
-			v= utilita;
-		else{
-			boolean stop = false;
-			for(int i=0;i<rows && !stop;i++){
-				for(int j=0;j<columns && !stop;j++){
-					if(!graph.isBusy(i, j)){
-						graph.placePiece(i, j, DirectedHexGraph.CUT_PLAYER);
-						graphOpponent.placePiece(i, j, DirectedHexGraph.CONNECT_PLAYER);
-						v = min(v,valoreMax(alpha,beta));
-
-						graph.removePiece(i, j);
-						graphOpponent.removePiece(i, j);
-						if(v<=alpha){
-							profondita--;
-							return v;
-						}
-						beta = min(v,beta);
+	profondita--;
+	return v;
+}
 
 
+private int valoreMin(int alpha,int beta){
+	profondita++;
+	int utilita = 0;
+	int v = DirectedHexGraph.INF;
+	if((utilita = TestTaglio())!=FAILTEST)
+		v= utilita;
+	else{
+		boolean stop = false;
+		for(int i=0;i<rows && !stop;i++){
+			for(int j=0;j<columns && !stop;j++){
+				if(!graph.isBusy(i, j)){
+					graph.placePiece(i, j, DirectedHexGraph.CUT_PLAYER);
+					graphOpponent.placePiece(i, j, DirectedHexGraph.CONNECT_PLAYER);
+					v = min(v,valoreMax(alpha,beta));
 
-						//stop = true;
+					graph.removePiece(i, j);
+					graphOpponent.removePiece(i, j);
+					if(v<=alpha){
+						profondita--;
+						return v;
 					}
+					beta = min(v,beta);
 
+
+
+					//stop = true;
 				}
+
 			}
 		}
-		profondita--;
-		return v;
 	}
+	profondita--;
+	return v;
+}
 
 
-	private int TestTaglio(){
+private int TestTaglio(){
 
-		int flowM = graph.getMaxFlow();
-		int flowO = graphOpponent.getMaxFlow();
+	//int flowM = graph.getMaxFlow();
+	int flowO = graphOpponent.getMaxFlow();
+	int distance = graphOpponent.getDistance();
 
 
-		if(flowO == 0){	//ho vinto
-			return DirectedHexGraph.INF;
-		}
-		else if(flowM==0){
-			return -DirectedHexGraph.INF;
-		}
-		else if(profondita == profonditaLimite)
-			return -flowO;
-		return FAILTEST;
+	if(flowO == 0){	//ho vinto
+		return DirectedHexGraph.INF;
 	}
-
-	private int min(int x,int y){
-		if(x<=y)
-			return x;
-		else return y;
+	else if(distance==1){
+		return -DirectedHexGraph.INF;
 	}
+	else if(profondita == profonditaLimite)
+		return -flowO+distance*100;
+	return FAILTEST;
+}
 
-	private int max(int x,int y){
-		if(x>=y)
-			return x;
-		else return y;
-	}
+private int min(int x,int y){
+	if(x<=y)
+		return x;
+	else return y;
+}
 
-	public void printGraph(){
-		graph.viewGraph("");
-	}
+private int max(int x,int y){
+	if(x>=y)
+		return x;
+	else return y;
+}
+
+public void printGraph(){
+	graph.viewGraph("");
+}
 }
