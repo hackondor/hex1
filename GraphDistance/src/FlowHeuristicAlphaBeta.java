@@ -12,8 +12,8 @@ public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 	private Node lastPlaced = null;				//ultima pedina posizionata dall'avversario
 	private int rows = -1;
 	private int columns = -1;
-	int profonditaLimite = 0;
-	int profondita = 0;
+	private int profonditaLimite = 0;
+	private int profondita = 0;
 	
 	
 
@@ -47,8 +47,8 @@ public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 		if(getNumberOfPiece()!=0){
 			lastPlaced = getLastNodePlaced();
 			System.out.println("last:"+lastPlaced.getX()+" "+lastPlaced.getY());//test
-			graph.placePiece(lastPlaced.getX(),lastPlaced.getY(),UndirectedHexGraph.CUT_PLAYER);
-			graphOpponent.placePiece(lastPlaced.getX(),lastPlaced.getY(),UndirectedHexGraph.CONNECT_PLAYER);
+			graph.placePiece(lastPlaced.getX(),lastPlaced.getY(),DirectedHexGraph.CUT_PLAYER);
+			graphOpponent.placePiece(lastPlaced.getX(),lastPlaced.getY(),DirectedHexGraph.CONNECT_PLAYER);
 		}
 
 		int maxUtility = -DirectedHexGraph.INF-1;
@@ -135,7 +135,7 @@ public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 
 	private int valoreMin(int alpha,int beta){
 		profondita++;
-		int utilita;
+		int utilita = 0;
 		int v = DirectedHexGraph.INF;
 		if((utilita = TestTaglio())!=FAILTEST)
 			v= utilita;

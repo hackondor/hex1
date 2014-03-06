@@ -56,12 +56,10 @@ public class DirectedHexGraph implements HexGraph {
 			public boolean run(Node n) {
 				pairs_added_edge = new ArrayList<Pair<Node>>();
 				adjacents = getNeighbors(n);
-				Collection<Node> source_adjacents = g.getNeighbors(s);
+				Collection<Node> source_adjacents = getNeighbors(s);
 				if(source_adjacents.contains(n)){
 					isConnectedToSource = true;
 					for(Node node1:adjacents){
-						if(node1==s)
-							System.out.println("source");//test
 						if(!source_adjacents.contains(node1)){
 							Edge e = new Edge(k++,MAXFLOW);
 							g.addEdge(e, s,node1);
@@ -161,7 +159,7 @@ public class DirectedHexGraph implements HexGraph {
 			@Override
 			public boolean run(Node n) {
 				adjacents = getNeighbors(n);
-				Collection<Node> source_adjacents = g.getNeighbors(s);
+				Collection<Node> source_adjacents = getNeighbors(s);
 				if(source_adjacents.contains(n))
 					isConnectedToSource = true;
 
@@ -330,6 +328,28 @@ public class DirectedHexGraph implements HexGraph {
 	
 	@Override
 	public int getMaxFlow() {
+		
+		
+		 Transformer<Edge, Integer> edge_capacities =
+				new Transformer<Edge, Integer>(){
+			public Integer transform(Edge link) {
+
+				return link.getCapacity();
+			}
+		};
+
+		 Map<Edge, Double> edgeFlowMap = null;
+
+		// This Factory produces new edges for use by the algorithm
+		 Factory<Edge> edgeFactory = new Factory<Edge>() {
+			int count = 0;
+			public Edge create() {
+				return new Edge(count,0);
+			}
+		};
+
+
+		
 		edgeFlowMap = new HashMap<Edge, Double>();
 		EdmondsKarpMaxFlow<Node, Edge> ek = new EdmondsKarpMaxFlow(g, s, t, edge_capacities, edgeFlowMap, 
 				edgeFactory);
@@ -347,30 +367,7 @@ public class DirectedHexGraph implements HexGraph {
 	}
 
 
-	private Transformer<Edge, Double> edge_capacities =
-			new Transformer<Edge, Double>(){
-		public Double transform(Edge link) {
 
-			return (double)link.getCapacity();
-		}
-	};
-
-	private Map<Edge, Double> edgeFlowMap = null;
-
-	// This Factory produces new edges for use by the algorithm
-	private Factory<Edge> edgeFactory = new Factory<Edge>() {
-		int count = 0;
-		public Edge create() {
-			return new Edge(count,0);
-		}
-	};
-
-
-	private Factory<DirectedGraph<Node, Integer>> graphFactory = new Factory<DirectedGraph<Node, Integer>>() {
-		public DirectedGraph<Node, Integer> create() {
-			return new DirectedSparseGraph<Node,Integer>();
-		}
-	};
 
 
 
