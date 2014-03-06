@@ -71,36 +71,30 @@ public class Main {
 	}
 	
 	public void test(){
+		
+		int maxFlow = 0;
 		try {
-			DirectedHexGraph g = new DirectedHexGraph(2, 2, 0);
+			for(int i =0;i<10000;i++){
+			DirectedHexGraph g = new DirectedHexGraph(10, 10, 0);
 			g.placePiece(0, 0, HexGraph.CONNECT_PLAYER);
-			g.placePiece(0, 1, HexGraph.CUT_PLAYER);			
+			g.placePiece(0, 5, HexGraph.CUT_PLAYER);			
 			g.placePiece(1, 0, HexGraph.CONNECT_PLAYER);			
-			g.placePiece(1, 1, HexGraph.CUT_PLAYER);
-			System.out.println("11--> "+g.getMaxFlow());
-			g.removePiece(1, 1);
+			g.placePiece(3, 8, HexGraph.CUT_PLAYER);
+			g.removePiece(3, 8);
 			g.removePiece(1, 0);
-			g.viewGraph("test");
-//			g.placePiece(1, 1,HexGraph.CONNECT_PLAYER );
-//			g.placePiece(1, 0,HexGraph.CUT_PLAYER );
-//			
-//			System.out.println("10--> "+g.getMaxFlow());
-//			g.removePiece(1, 0);
-//			g.removePiece(1, 1);
-//			g.removePiece(0, 1);
-//			g.placePiece(1, 0, HexGraph.CONNECT_PLAYER);
-//			g.placePiece(0, 1,HexGraph.CUT_PLAYER );
-//			g.placePiece(1, 1,HexGraph.CONNECT_PLAYER );
-//			System.out.println("11--> "+g.getMaxFlow());
-//			g.removePiece(1, 1);
-//			g.removePiece(0, 1);
-//			g.placePiece(1, 1,HexGraph.CONNECT_PLAYER );
-//			g.placePiece(0, 1,HexGraph.CUT_PLAYER );
-//			System.out.println("01--> "+g.getMaxFlow());
-//			
-//			
-//			System.out.println(g.getMaxFlow());
-//			g.viewGraph("test");
+			g.placePiece(2, 2, HexGraph.CONNECT_PLAYER);
+			g.placePiece(4, 3, HexGraph.CONNECT_PLAYER);
+			g.placePiece(9, 9, HexGraph.CONNECT_PLAYER);
+			g.removePiece(9, 9);
+			g.placePiece(8, 9, HexGraph.CUT_PLAYER);
+			g.placePiece(1, 1, HexGraph.CONNECT_PLAYER);
+			//g.viewGraph("test");
+			
+			if(g.getMaxFlow()!=maxFlow && i!=0){
+				maxFlow = g.getMaxFlow();
+				System.out.println("Errore"+ i+":"+maxFlow);
+			}
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -111,8 +105,8 @@ public class Main {
 	
 	public static void main(String[] args) {
 		 Main m = new Main();
-		//m.test();
-		m.test_game();
+		m.test();
+		//m.test_game();
 
 		 
 		
