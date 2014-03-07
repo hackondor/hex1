@@ -1,3 +1,4 @@
+package ia.game.hex.heuristics;
 import ia.game.hex.algorithms.AlgorithmsDefinition;
 import ia.game.hex.algorithms.InvalidPlacementException;
 import ia.game.hex.algorithms.MultipleActionExeption;

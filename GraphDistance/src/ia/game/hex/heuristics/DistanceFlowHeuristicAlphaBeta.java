@@ -1,3 +1,4 @@
+package ia.game.hex.heuristics;
 
 public class DistanceFlowHeuristicAlphaBeta extends FlowHeuristicAlphaBeta {
 

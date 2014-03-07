@@ -1,3 +1,4 @@
+package ia.game.hex.heuristics;
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
