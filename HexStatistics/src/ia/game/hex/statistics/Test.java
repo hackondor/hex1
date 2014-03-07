@@ -13,13 +13,14 @@ public class Test {
 	
 	public void start(int numberOfGame){
 		
-		statistics = new StatisticsCalculator(numberOfGame);
+		statistics = new StatisticsCalculator(numberOfGame,"FlowDistanceTest");
 		for(int i=0;i<numberOfGame;i++){
-			 Game g = new Game();
+			 Game g = new Game(10,10);
+			 g.addPlayer(new Algorithm("StupidIA"));
+			 g.addPlayer(new ASimplyWin("Sheldon"));
 			 g.setOnGameFinish(new CommandExec<Player>(new MyAction<Player>()));
 			 statistics.init(g.getPlayers());
 			 JFrame gui = g.getGui();
-			 g.addPlayer(new ASimplyWin("Sheldon"));g.addPlayer(new Algorithm("StupidIA"));
 			 gui.setVisible(true);
 		}
 
