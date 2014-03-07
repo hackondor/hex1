@@ -54,12 +54,10 @@ public class Main {
 		 JFrame gui = g.getGui();
 		 gui.setVisible(true);
 		 dh = new DistanceHeuristicAlphaBeta("Distance H",1);
-		 fh = new FlowHeuristicAlphaBeta("Flow H",4,100);
+		// fh = new FlowHeuristicAlphaBeta("Flow H",4,100);
 		 g.addPlayer("a");
 		 g.addPlayer("b");
 		
-		 
-
 	}
 	
 	public void test(){

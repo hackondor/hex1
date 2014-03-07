@@ -4,18 +4,18 @@ import ia.game.hex.algorithms.MultipleActionExeption;
 import ia.game.hex.algorithms.Node;
 
 
-public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
+public abstract class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 
-	private final static int FAILTEST = 10000000;	//il test di taglio nn ha successo		
-	private DirectedHexGraph graph = null;
-	private DirectedHexGraph graphOpponent = null;
+	protected final static int FAILTEST = 10000000;	//il test di taglio nn ha successo		
+	protected DirectedHexGraph graph = null;
+	protected DirectedHexGraph graphOpponent = null;
 	private Node lastPlaced = null;				//ultima pedina posizionata dall'avversario
 	private int rows = -1;
 	private int columns = -1;
-	private int profonditaLimite = 0;
-	private int profondita = 0;
+	protected int profonditaLimite = 0;
+	protected int profondita = 0;
 	private ScrollAction scroll = null;
-	private int ratio = 0;
+	protected int ratio = 0;
 
 
 
@@ -193,24 +193,7 @@ private int valoreMin(int alpha,int beta){
 }
 
 
-private int TestTaglio(){
-
-	//int flowM = graph.getMaxFlow();
-	int flowO = graphOpponent.getMaxFlow();
-	int distanceO = graphOpponent.getDistance();
-	int distance = graph.getDistance();
-
-
-	if(flowO == 0){	//ho vinto
-		return DirectedHexGraph.INF;
-	}
-	else if(distanceO==1){
-		return -DirectedHexGraph.INF;
-	}
-	else if(profondita == profonditaLimite)
-		return -flowO+(distanceO+distance)*ratio;
-	return FAILTEST;
-}
+public abstract int TestTaglio();
 
 private int min(int x,int y){
 	if(x<=y)
