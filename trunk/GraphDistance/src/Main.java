@@ -1,17 +1,6 @@
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
-
-
-
-
-
-
-
-
-
-
-
 import ia.game.hex.algorithms.Player;
 import ia.game.hex.gui.model.Game;
 
@@ -61,13 +50,14 @@ public class Main {
 	}
 	
 	void test_game(){
-		Game g = new Game(6,6);
+		Game g = new Game(3,3);
 		 JFrame gui = g.getGui();
 		 gui.setVisible(true);
-		 dh = new DistanceHeuristicAlphaBeta("Distance H",5);
-		 fh = new FlowHeuristicAlphaBeta("Flow H",4);
-		 g.addPlayer(dh);
-		 g.addPlayer(fh);
+		 dh = new DistanceHeuristicAlphaBeta("Distance H",1);
+		 fh = new FlowHeuristicAlphaBeta("Flow H",4,100);
+		 g.addPlayer("a");
+		 g.addPlayer("b");
+		
 		 
 
 	}
@@ -122,8 +112,6 @@ public class Main {
 		//m.test();
 		m.test_game();
 
-		 
-		
 	}
 
 }
