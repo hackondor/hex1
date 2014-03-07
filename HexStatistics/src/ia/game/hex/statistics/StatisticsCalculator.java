@@ -34,12 +34,17 @@ public class StatisticsCalculator {
 	 * when a new game is created
 	 * @param a
 	 */
+	private boolean init = false;
 	public void init(ArrayList<Player> a ){
 		players = a;
 		p1 = players.get(0).getName();
 		p2 = players.get(1).getName();
-		fw.println("Primo giocatore: "+p1);
-		fw.println("Secondo giocatore: "+p2);
+		if(!init){
+			fw.println("Primo giocatore: "+p1);
+			fw.println("Secondo giocatore: "+p2);
+			init = true;
+		}
+		
 	}
 	
 	/**

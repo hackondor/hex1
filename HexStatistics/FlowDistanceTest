@@ -1,0 +1,22 @@
+Primo giocatore: StupidIA
+Secondo giocatore: Sheldon
+Primo giocatore: StupidIA
+Secondo giocatore: Sheldon
+---------------------------
+Game: 1
+Win: Sheldon
+StupidIA avg move: 8
+StupidIA avg time: 3.5714285714285716
+Sheldon avg move: 8
+Sheldon avg time: 3.5714285714285716
+---------------------------
+---------------------------
+Game: 2
+Win: Sheldon
+StupidIA avg move: 10
+StupidIA avg time: 2.5
+Sheldon avg move: 10
+Sheldon avg time: 2.5
+---------------------------
+StupidIA 0
+Sheldon 2
