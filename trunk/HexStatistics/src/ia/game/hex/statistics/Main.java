@@ -9,7 +9,7 @@ public class Main {
 	
 	public static void main(String args[]){
 		Test t = new Test();
-		t.start(10);
+		t.start(2);
 	}
 	
 
