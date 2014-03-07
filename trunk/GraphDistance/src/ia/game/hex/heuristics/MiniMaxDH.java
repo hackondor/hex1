@@ -1,24 +1,29 @@
+package ia.game.hex.heuristics;
 import ia.game.hex.algorithms.AlgorithmsDefinition;
 import ia.game.hex.algorithms.InvalidPlacementException;
 import ia.game.hex.algorithms.MultipleActionExeption;
 import ia.game.hex.algorithms.Node;
 
 
-public class DistanceHeuristicAlphaBeta extends AlgorithmsDefinition {
+/**
+ * MiniMaxDH = MiniMax with Distance Heuristic
+ * Minimax che utilizza la funzione euristica della distanza tra i vertici del grafo.
+ * La Board viene rappresentata su un grado non direzionato.
+ * Qualche informazione su questa rappresentazione del grafo si trova nell'articolo "Search in Hex, Jack van Rijswijck"
+ * @author Nich
+ *
+ */
+public class MiniMaxDH extends AlgorithmsDefinition {
 
-	private final static int FAILTEST = 10000;	//il test di taglio nn ha successo		
 	private UndirectedHexGraph graph = null;
 	private UndirectedHexGraph graphOpponent = null;
 	private Node lastPlaced = null;				//ultima pedina posizionata dall'avversario
 	private int rows = -1;
 	private int columns = -1;
-	int profonditaLimite = 0;
-	int profondita = 0;
 	
-
-	public DistanceHeuristicAlphaBeta(String name,int profondita) {
+	public MiniMaxDH(String name) {
 		super(name);
-		profonditaLimite = profondita;
+		
 	}
 
 	@Override
@@ -39,7 +44,7 @@ public class DistanceHeuristicAlphaBeta extends AlgorithmsDefinition {
 			}catch(Exception e){
 				e.printStackTrace();
 			}
-
+			
 		}
 		if(getNumberOfPiece()!=0){
 			lastPlaced = getLastNodePlaced();
@@ -48,25 +53,24 @@ public class DistanceHeuristicAlphaBeta extends AlgorithmsDefinition {
 			graphOpponent.placePiece(lastPlaced.getX(),lastPlaced.getY(),UndirectedHexGraph.CONNECT_PLAYER);
 		}
 
-		int maxUtility = -UndirectedHexGraph.INF-1;
-		bestMove = new Node(0,0);
+		int maxUtility = -1;
+		bestMove = new Node(-1,-1);
 		lastEmpty = new Node(-1,-1);
-
+		
 		boolean stop = false;
 		for(int i=0;i<rows && !stop;i++){
 			for(int j=0;j<columns && !stop;j++){
-
 				if(!graph.isBusy(i, j)){
 					lastEmpty = new Node(i,j);
 					graph.placePiece(i, j,UndirectedHexGraph.CONNECT_PLAYER);
 					graphOpponent.placePiece(i, j,UndirectedHexGraph.CUT_PLAYER);
-					int x = valoreMin(-UndirectedHexGraph.INF,UndirectedHexGraph.INF);
+					int x = valoreMin();
 					System.out.println("utility:"+x);//test
 					if(maxUtility < x){
 						maxUtility = x;
 						bestMove.setX(i);bestMove.setY(j);
 					}	
-					if(maxUtility==UndirectedHexGraph.INF){				//mi fermo alla prima mossa utile
+					if(maxUtility==1){				//mi fermo alla prima mossa utile
 						stop = true;
 						System.out.println("mi fermo alla prima mossa utile");
 					}
@@ -92,92 +96,72 @@ public class DistanceHeuristicAlphaBeta extends AlgorithmsDefinition {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-
+	
+		
 	}
-
-	private int valoreMax(int alpha,int beta){
-		profondita++;
-		int v = -UndirectedHexGraph.INF;
-		int utilita=0;
-		if((utilita = TestTaglio())!=FAILTEST)
-			v= utilita;
-		else{
-			boolean stop = false;
-			for(int i=0;i<rows && !stop;i++){
-				for(int j=0;j<columns && !stop;j++){
-					if(!graph.isBusy(i, j)){
-						graph.placePiece(i, j, UndirectedHexGraph.CONNECT_PLAYER);
-						graphOpponent.placePiece(i, j, UndirectedHexGraph.CUT_PLAYER);
-						v = max(v,valoreMin(alpha,beta));
-						graph.removePiece(i, j);
-						graphOpponent.removePiece(i, j);
-						if(v>=beta){
-							profondita--;
-							return v;
-						}
-						alpha = max(v,alpha);
-					
-						//stop = true;
-					}
-				}
-			}
-		}
-
-		profondita--;
-		return v;
-	}
-
-
-	private int valoreMin(int alpha,int beta){
-		profondita++;
+	
+	private int valoreMax(){
+		
 		int utilita;
-		int v = UndirectedHexGraph.INF;
-		if((utilita = TestTaglio())!=FAILTEST)
-			v= utilita;
-		else{
-			boolean stop = false;
-			for(int i=0;i<rows && !stop;i++){
-				for(int j=0;j<columns && !stop;j++){
-					if(!graph.isBusy(i, j)){
-						graph.placePiece(i, j, UndirectedHexGraph.CUT_PLAYER);
-						graphOpponent.placePiece(i, j, UndirectedHexGraph.CONNECT_PLAYER);
-						v = min(v,valoreMax(alpha,beta));
-						graph.removePiece(i, j);
-						graphOpponent.removePiece(i, j);
-						if(v<=alpha){
-							profondita--;
-							return v;
-						}
-						beta = min(v,beta);
-						
-						
-
-						//stop = true;
-					}
-
+		if((utilita = TestTerminazione())!=-1)
+			return utilita;
+		int v = -2;
+		boolean stop = false;
+		for(int i=0;i<rows && !stop;i++){
+			for(int j=0;j<columns && !stop;j++){
+				if(!graph.isBusy(i, j)){
+					graph.placePiece(i, j, UndirectedHexGraph.CONNECT_PLAYER);
+					graphOpponent.placePiece(i, j, UndirectedHexGraph.CUT_PLAYER);
+					v = max(v,valoreMin());
+					graph.removePiece(i, j);
+					graphOpponent.removePiece(i, j);
+					//stop = true;
 				}
 			}
 		}
-		profondita--;
+		
 		return v;
 	}
+	
 
+	private int valoreMin(){
 
-	private int TestTaglio(){
-
-		int distanceM = graph.getDistance();
-		int distanceO = graphOpponent.getDistance();
-
-		if(distanceM == 1){	//ho vinto
-			return UndirectedHexGraph.INF;
+		int utilita;
+		if((utilita = TestTerminazione())!=-1)
+			return utilita;
+		
+		int v = 2;
+		boolean stop = false;
+		for(int i=0;i<rows && !stop;i++){
+			for(int j=0;j<columns && !stop;j++){
+				if(!graph.isBusy(i, j)){
+					graph.placePiece(i, j, UndirectedHexGraph.CUT_PLAYER);
+					graphOpponent.placePiece(i, j, UndirectedHexGraph.CONNECT_PLAYER);
+					v = min(v,valoreMax());
+					
+					graph.removePiece(i, j);
+					graphOpponent.removePiece(i, j);
+					
+					//stop = true;
+				}
+				
+			}
+			
 		}
-		else if(distanceO==1){
-			return -UndirectedHexGraph.INF;
+		
+		return v;
+	}
+	
+	
+	private int TestTerminazione(){
+		if(graph.getDistance() == 1){	//ho vinto
+			return 1;
 		}
-		else if(profondita == profonditaLimite)
-			return distanceO-distanceM;
-		return FAILTEST;
+		else if(graphOpponent.getDistance()==1){
+			return 0;
+		}
+		else 
+			return -1;
 	}
 
 	private int min(int x,int y){
@@ -191,8 +175,9 @@ public class DistanceHeuristicAlphaBeta extends AlgorithmsDefinition {
 			return x;
 		else return y;
 	}
-
+	
 	public void printGraph(){
 		graph.viewGraph("");
 	}
+
 }

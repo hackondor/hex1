@@ -1,3 +1,4 @@
+package ia.game.hex.heuristics;
 
 	/**
 	 * Informazioni di un nodo

@@ -1,10 +1,11 @@
+package ia.game.hex.heuristics;
 import ia.game.hex.algorithms.AlgorithmsDefinition;
 import ia.game.hex.algorithms.InvalidPlacementException;
 import ia.game.hex.algorithms.MultipleActionExeption;
 import ia.game.hex.algorithms.Node;
 
 
-public class DistanceHeuristic extends AlgorithmsDefinition {
+public class DistanceHeuristicAlphaBeta extends AlgorithmsDefinition {
 
 	private final static int FAILTEST = 10000;	//il test di taglio nn ha successo		
 	private UndirectedHexGraph graph = null;
@@ -14,8 +15,9 @@ public class DistanceHeuristic extends AlgorithmsDefinition {
 	private int columns = -1;
 	int profonditaLimite = 0;
 	int profondita = 0;
+	
 
-	public DistanceHeuristic(String name,int profondita) {
+	public DistanceHeuristicAlphaBeta(String name,int profondita) {
 		super(name);
 		profonditaLimite = profondita;
 	}
@@ -59,7 +61,7 @@ public class DistanceHeuristic extends AlgorithmsDefinition {
 					lastEmpty = new Node(i,j);
 					graph.placePiece(i, j,UndirectedHexGraph.CONNECT_PLAYER);
 					graphOpponent.placePiece(i, j,UndirectedHexGraph.CUT_PLAYER);
-					int x = valoreMin();
+					int x = valoreMin(-UndirectedHexGraph.INF,UndirectedHexGraph.INF);
 					System.out.println("utility:"+x);//test
 					if(maxUtility < x){
 						maxUtility = x;
@@ -95,7 +97,7 @@ public class DistanceHeuristic extends AlgorithmsDefinition {
 
 	}
 
-	private int valoreMax(){
+	private int valoreMax(int alpha,int beta){
 		profondita++;
 		int v = -UndirectedHexGraph.INF;
 		int utilita=0;
@@ -108,9 +110,15 @@ public class DistanceHeuristic extends AlgorithmsDefinition {
 					if(!graph.isBusy(i, j)){
 						graph.placePiece(i, j, UndirectedHexGraph.CONNECT_PLAYER);
 						graphOpponent.placePiece(i, j, UndirectedHexGraph.CUT_PLAYER);
-						v = max(v,valoreMin());
+						v = max(v,valoreMin(alpha,beta));
 						graph.removePiece(i, j);
 						graphOpponent.removePiece(i, j);
+						if(v>=beta){
+							profondita--;
+							return v;
+						}
+						alpha = max(v,alpha);
+					
 						//stop = true;
 					}
 				}
@@ -122,7 +130,7 @@ public class DistanceHeuristic extends AlgorithmsDefinition {
 	}
 
 
-	private int valoreMin(){
+	private int valoreMin(int alpha,int beta){
 		profondita++;
 		int utilita;
 		int v = UndirectedHexGraph.INF;
@@ -135,10 +143,16 @@ public class DistanceHeuristic extends AlgorithmsDefinition {
 					if(!graph.isBusy(i, j)){
 						graph.placePiece(i, j, UndirectedHexGraph.CUT_PLAYER);
 						graphOpponent.placePiece(i, j, UndirectedHexGraph.CONNECT_PLAYER);
-						v = min(v,valoreMax());
-
+						v = min(v,valoreMax(alpha,beta));
 						graph.removePiece(i, j);
 						graphOpponent.removePiece(i, j);
+						if(v<=alpha){
+							profondita--;
+							return v;
+						}
+						beta = min(v,beta);
+						
+						
 
 						//stop = true;
 					}
@@ -182,5 +196,4 @@ public class DistanceHeuristic extends AlgorithmsDefinition {
 	public void printGraph(){
 		graph.viewGraph("");
 	}
-
 }

@@ -1,3 +1,4 @@
+package ia.game.hex.heuristics;
 
 public class ScrollActionByColumn implements ScrollAction {
 
