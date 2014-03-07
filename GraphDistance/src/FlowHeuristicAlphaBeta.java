@@ -15,12 +15,14 @@ public class FlowHeuristicAlphaBeta extends AlgorithmsDefinition {
 	private int profonditaLimite = 0;
 	private int profondita = 0;
 	private ScrollAction scroll = null;
+	private int ratio = 0;
 
 
 
-	public FlowHeuristicAlphaBeta(String name,int profondita) {
+	public FlowHeuristicAlphaBeta(String name,int profondita,int ratio) {
 		super(name);
 		profonditaLimite = profondita;
+		this.ratio = ratio;
 	}
 
 	@Override
@@ -195,17 +197,18 @@ private int TestTaglio(){
 
 	//int flowM = graph.getMaxFlow();
 	int flowO = graphOpponent.getMaxFlow();
-	int distance = graphOpponent.getDistance();
+	int distanceO = graphOpponent.getDistance();
+	int distance = graph.getDistance();
 
 
 	if(flowO == 0){	//ho vinto
 		return DirectedHexGraph.INF;
 	}
-	else if(distance==1){
+	else if(distanceO==1){
 		return -DirectedHexGraph.INF;
 	}
 	else if(profondita == profonditaLimite)
-		return -flowO+distance*100;
+		return -flowO+(distanceO+distance)*ratio;
 	return FAILTEST;
 }
 
