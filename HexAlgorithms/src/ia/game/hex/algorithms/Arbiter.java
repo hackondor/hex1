@@ -16,7 +16,8 @@ public class Arbiter implements Observer{
 	private Color[] color;
 	private ArrayList<GameListener> finishGameListener;
 	private WinDetection[] winDetection ;
-
+	private boolean isStart = false;
+	
 	public Arbiter(Board board){
 		this.board = board;
 		players = new ArrayList<Player>();
@@ -27,6 +28,14 @@ public class Arbiter implements Observer{
 		winDetection[1]=new WinDetection(1, board.GetRowsNumber(),board.GetColumnsNumber());
 		board.addObserver(winDetection[0]);
 		board.addObserver(winDetection[1]);
+	}
+
+	public boolean isStart() {
+		return isStart;
+	}
+
+	public void setStart(boolean isStart) {
+		this.isStart = isStart;
 	}
 
 	/**
@@ -93,7 +102,7 @@ public class Arbiter implements Observer{
 	public void addPlayer(String aname){
 		Player p = new Player(aname,color[players.size()]);
 		players.add(p);
-		if(isStartable()) //se il primo giocatore è un IA
+		if(isStartable() && isStart) //se il primo giocatore è un IA
 			_startGame();
 	}
 	/**
