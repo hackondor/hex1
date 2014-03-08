@@ -21,6 +21,7 @@ public class Main {
 			 //g.addPlayer(new Algorithm2("GoodIA"));
 			 
 			 g.addPlayer(new Algorithm("StupidIA"));g.addPlayer("Player 2");
+			 g.start();
 			
 
 	}
