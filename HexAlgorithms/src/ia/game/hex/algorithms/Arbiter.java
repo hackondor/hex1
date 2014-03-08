@@ -36,6 +36,8 @@ public class Arbiter implements Observer{
 
 	public void setStart(boolean isStart) {
 		this.isStart = isStart;
+		if(isStart && isStartable())
+			_startGame();
 	}
 
 	/**
@@ -93,7 +95,7 @@ public class Arbiter implements Observer{
 	}
 
 	public boolean isTurnOfHumanPlayer(){
-		return isStartable() && !players.get(turn).isIA();
+		return isStart && isStartable() && !players.get(turn).isIA();
 	}
 
 	/**
@@ -115,7 +117,7 @@ public class Arbiter implements Observer{
 		Player p = new Player(a.getName(),a,color[players.size()]);
 		players.add(p);
 		a.addObserver(this);	//aggiunta di Arbiter alla lista degli ascoltatori che attendono la l'evento che segnala la fine della mossa dell'algoritmo
-		if(isStartable()) //se il primo giocatore è un IA
+		if(isStartable() && isStart) //se il primo giocatore è un IA
 			_startGame();
 	}
 
