@@ -58,6 +58,7 @@ public class Main {
 		// fh = new FlowHeuristicAlphaBeta("Flow H",4,100);
 		 g.addPlayer("a");
 		 g.addPlayer("b");
+		 g.start();
 		
 	}
 	
