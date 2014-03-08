@@ -62,6 +62,11 @@ public class Game {
 		return arbiter.getPlayers();
 	}
 	
+	public boolean start(){
+		arbiter.setStart(true);
+		return arbiter.isStartable();
+	}
+	
 	/**
 	 * 
 	 */
