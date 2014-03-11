@@ -31,7 +31,9 @@ import library.pattern.command.CommandExec;
 public class Main {
 
 	private DistanceHeuristicAlphaBeta dh;
-	private FlowHeuristicAlphaBeta fh;
+	private DistanceFlowHeuristicAlphaBeta fh;
+	private FlowLocalHeuristicAlphaBeta fl;
+	private ShannonStrategy ss;
 	
 	public class MyAction<T> implements Action<T>{
 		
@@ -51,13 +53,17 @@ public class Main {
 	}
 	
 	void test_game(){
-		Game g = new Game(3,3);
+		Game g = new Game(6,6);
 		 JFrame gui = g.getGui();
 		 gui.setVisible(true);
-		 dh = new DistanceHeuristicAlphaBeta("Distance H",1);
-		// fh = new FlowHeuristicAlphaBeta("Flow H",4,100);
-		 g.addPlayer("a");
+		 //dh = new DistanceHeuristicAlphaBeta("Distance H",1);
+		 //fh = new DistanceFlowHeuristicAlphaBeta("Flow H",4,30);
+		 //fl = new FlowLocalHeuristicAlphaBeta("Local", 4, 100);
+		 ss = new ShannonStrategy("ss");
+		 
+		 
 		 g.addPlayer("b");
+		 g.addPlayer(ss);
 		 g.start();
 		
 	}
@@ -100,11 +106,7 @@ public class Main {
 		}
 		
 	}
-	
-	public void testScroll(){
-		ScrollAction scroll = new ScrollActionByRow(3, 3);
 
-	}
 	
 	
 	public static void main(String[] args) {
