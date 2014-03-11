@@ -25,8 +25,8 @@ import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 
 
+public class DirectedGraphPattern implements HexGraph {
 
-public class DirectedHexGraph implements HexGraph {
 
 	private final static int MAXFLOW = 9999;
 	private int rows = -1;
@@ -206,7 +206,7 @@ public class DirectedHexGraph implements HexGraph {
 	}
 
 
-	public DirectedHexGraph(int rows,int columns,int direction) throws Exception{
+	public DirectedGraphPattern(int rows,int columns,int direction) throws Exception{
 		if(direction!=0 && direction!=1)
 			throw new Exception();
 		this.direction = direction;
@@ -299,44 +299,7 @@ public class DirectedHexGraph implements HexGraph {
 		Command<Node> last = commandHistory.pop();
 		last.undo(nodes[i][j]);	
 	}
-	
-	
-	 Transformer<Edge, Integer> wtTransformer = new Transformer<Edge,Integer>() {
-		 public Integer transform(Edge link) {
-		 return link.getCapacity();
-		 }
-	 };
 
-	//restituisce la massima distanza tra tutti i percorsi che vanno dalla sorgente alla destinazione
-	public int getDistance2(){
-		DijkstraShortestPath<Node,Edge> alg = new DijkstraShortestPath<Node,Edge>(g,wtTransformer);
-		Number distance1;
-		Number distance2;
-		int max = 0;
-		try{
-			distance1= alg.getDistance(s, t);
-			for(Edge e:alg.getPath(s,t)){
-				e.setCapacity(10);
-				distance2= alg.getDistance(s, t);
-				System.out.println("distance2: "+distance2.intValue());//test
-				if(distance2!=null){
-					if(distance1.intValue()<distance2.intValue())
-						max = distance2.intValue();
-					
-				}
-				e.setCapacity(1);
-			}
-			if(distance1 == null)	//percorso nn esistente
-				return INF;
-			else
-				return max;
-		}catch(IllegalArgumentException e){
-			e.printStackTrace();
-			return INF;
-		}		
-		
-	}
-	
 	public int getDistance(){
 		DijkstraShortestPath<Node,Edge> alg = new DijkstraShortestPath<Node,Edge>(g);
 		Number distance;
@@ -354,8 +317,6 @@ public class DirectedHexGraph implements HexGraph {
 
 	private Collection<Node> getNeighbors(Node n){
 		Collection<Edge> outEdge = g.getOutEdges(n);
-		if(outEdge == null)
-			System.out.println(n.getRow()+","+n.getColumn());//test
 		ArrayList<Node> neighbors = new ArrayList<Node>();
 		for(Edge e:outEdge){
 			neighbors.add(g.getDest(e));
@@ -369,7 +330,7 @@ public class DirectedHexGraph implements HexGraph {
 	}
 
 	/*########################################################################
-	/*
+		/*
 	 * Oggetti usati per il calcolo del flusso
 	 */
 	private Transformer<Edge, Integer> edge_capacities =
@@ -389,14 +350,14 @@ public class DirectedHexGraph implements HexGraph {
 			return new Edge(count++,0);
 		}	
 	};
-	
-	
+
+
 	/*
 	 * ##########################################################################
 	 * Calcolo del flusso
 	 */
-	
-	
+
+
 	@Override
 	public int getMaxFlow() {
 
@@ -442,22 +403,9 @@ public class DirectedHexGraph implements HexGraph {
 		System.out.println(g);
 	}
 
-	public Node getDest() {
-		return t; 
-
-	}
-
-	public Node getSource() {
-		// TODO Auto-generated method stub
-		return s;
-	}
-
-	public Node[][] getNodes() {
-		// TODO Auto-generated method stub
-		return nodes;
-	}
-
 
 
 
 }
+
+
